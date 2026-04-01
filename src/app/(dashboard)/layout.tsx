@@ -1,0 +1,75 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { Sidebar, type NavLink } from "@/components/dashboard/sidebar";
+import {
+  LayoutDashboard,
+  Dumbbell,
+  UtensilsCrossed,
+  Settings,
+  ClipboardCheck,
+  TrendingUp,
+} from "lucide-react";
+
+const coachLinks: NavLink[] = [
+  { label: "Dashboard", href: "/coach", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { label: "Workouts", href: "/coach/workouts", icon: <Dumbbell className="h-4 w-4" /> },
+  { label: "Meals", href: "/coach/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
+  { label: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
+];
+
+const clientLinks: NavLink[] = [
+  { label: "Dashboard", href: "/client", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { label: "Workouts", href: "/client/workouts", icon: <Dumbbell className="h-4 w-4" /> },
+  { label: "Meals", href: "/client/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
+  { label: "Check-in", href: "/client/check-in", icon: <ClipboardCheck className="h-4 w-4" /> },
+  { label: "Progress", href: "/client/progress", icon: <TrendingUp className="h-4 w-4" /> },
+  { label: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
+];
+
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, avatar_url, role")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile) {
+    redirect("/login");
+  }
+
+  const role = profile.role as "coach" | "client";
+  const links = role === "coach" ? coachLinks : clientLinks;
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <Sidebar
+        role={role}
+        profile={{
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+        }}
+        links={links}
+      />
+
+      <main className="lg:pl-64">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}

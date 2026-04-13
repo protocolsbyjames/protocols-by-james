@@ -80,6 +80,20 @@ export async function POST(request: Request) {
           );
         }
 
+        // ----------------------------------------------------------
+        // Referral credit: if this referee was referred, credit the
+        // referrer $20 to their Stripe customer balance. Guarded on
+        // referrals.status='pending' so replaying the webhook is safe.
+        // ----------------------------------------------------------
+        try {
+          await creditReferrerIfPending(clientId);
+        } catch (err) {
+          // Don't fail the whole webhook if referral crediting blows up —
+          // the subscription itself is already recorded. Log + continue.
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error("Referral credit failed:", msg);
+        }
+
         break;
       }
 
@@ -141,4 +155,83 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ received: true });
+}
+
+/**
+ * Credit the referrer $20 (via Stripe customer balance) on the referee's
+ * first successful paid checkout. Idempotent: only acts on referrals rows
+ * whose status is still 'pending'.
+ *
+ * Effects when a pending referral exists for `refereeId`:
+ *  1. Ensures the referrer has a Stripe customer record.
+ *  2. Creates a negative balance transaction on that customer (= credit
+ *     that will auto-apply to their next invoice).
+ *  3. Marks the referrals row as 'credited'.
+ *  4. Marks the referee's `profiles.referral_discount_applied = true` so
+ *     they don't get the referee coupon on any subsequent checkout.
+ */
+async function creditReferrerIfPending(refereeId: string) {
+  const { data: referral } = await supabaseAdmin
+    .from("referrals")
+    .select("id, referrer_id, credit_cents, status")
+    .eq("referee_id", refereeId)
+    .maybeSingle();
+
+  if (!referral || referral.status !== "pending") return;
+
+  const { data: referrer } = await supabaseAdmin
+    .from("profiles")
+    .select("id, email, full_name, stripe_customer_id")
+    .eq("id", referral.referrer_id)
+    .maybeSingle();
+
+  if (!referrer) {
+    console.error("Referrer profile missing for referral", referral.id);
+    return;
+  }
+
+  let referrerCustomerId = referrer.stripe_customer_id as string | null;
+
+  if (!referrerCustomerId) {
+    const customer = await stripe.customers.create({
+      email: referrer.email ?? undefined,
+      name: referrer.full_name ?? undefined,
+      metadata: { supabase_user_id: referrer.id },
+    });
+    referrerCustomerId = customer.id;
+
+    await supabaseAdmin
+      .from("profiles")
+      .update({ stripe_customer_id: referrerCustomerId })
+      .eq("id", referrer.id);
+  }
+
+  // Negative amount = credit to the customer's balance.
+  const balanceTxn = await stripe.customers.createBalanceTransaction(
+    referrerCustomerId,
+    {
+      amount: -Math.abs(referral.credit_cents),
+      currency: "usd",
+      description: `Referral credit for referring user ${refereeId}`,
+      metadata: {
+        referral_id: referral.id,
+        referrer_id: referral.referrer_id,
+        referee_id: refereeId,
+      },
+    },
+  );
+
+  await supabaseAdmin
+    .from("referrals")
+    .update({
+      status: "credited",
+      stripe_balance_txn_id: balanceTxn.id,
+      credited_at: new Date().toISOString(),
+    })
+    .eq("id", referral.id);
+
+  await supabaseAdmin
+    .from("profiles")
+    .update({ referral_discount_applied: true })
+    .eq("id", refereeId);
 }

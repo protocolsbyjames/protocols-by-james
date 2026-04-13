@@ -19,6 +19,7 @@ function SignupPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("invite");
+  const referralCode = searchParams.get("ref");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +29,7 @@ function SignupPageContent() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [inviteCoachName, setInviteCoachName] = useState<string | null>(null);
+  const [referrerName, setReferrerName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!inviteToken) return;
@@ -51,6 +53,25 @@ function SignupPageContent() {
     lookupInvite();
   }, [inviteToken]);
 
+  useEffect(() => {
+    if (!referralCode) return;
+
+    async function lookupReferrer() {
+      const supabase = createClient();
+      const { data: referrer } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("referral_code", referralCode!.toLowerCase())
+        .maybeSingle();
+
+      if (referrer?.full_name) {
+        setReferrerName(referrer.full_name);
+      }
+    }
+
+    lookupReferrer();
+  }, [referralCode]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -67,6 +88,7 @@ function SignupPageContent() {
           data: {
             full_name: fullName,
             role,
+            ...(referralCode ? { referral_code: referralCode } : {}),
           },
         },
       });
@@ -131,6 +153,8 @@ function SignupPageContent() {
                 ? `We sent a confirmation link to ${email}. Click it to activate your account.`
                 : inviteCoachName
                 ? `You've been invited by ${inviteCoachName}`
+                : referrerName
+                ? `${referrerName} referred you — you'll get $20 off your first month`
                 : "Fill in your details to get started"}
             </CardDescription>
           </CardHeader>

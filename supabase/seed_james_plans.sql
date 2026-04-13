@@ -7,7 +7,7 @@
 --      Coaching") with THREE recurring monthly prices:
 --          $45.99 / mo
 --          $69.99 / mo
---          $99.99 / mo
+--          $129.99 / mo
 --      Copy each price ID (starts with "price_...") into the
 --      placeholders below.
 --   3) Replace REPLACE_ME_JAMES_COACH_ID with your own coach profile
@@ -48,7 +48,7 @@ values
     'Elite',
     'Full-service coaching with weekly touchpoints and priority support.',
     '["Everything in Pro","Weekly check-ins with video review","Priority 1:1 messaging","Quarterly strategy calls"]'::jsonb,
-    9999,   -- $99.99 / month
+    12999,  -- $129.99 / month
     'month',
     'REPLACE_ME_PRICE_ELITE',
     3

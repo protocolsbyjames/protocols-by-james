@@ -46,6 +46,21 @@ export async function POST(request: Request) {
       .update({ coach_id: plan.coach_id })
       .eq("id", user.id);
 
+    // If this client was referred AND hasn't already redeemed their referee
+    // discount, apply the one-time Stripe coupon at checkout. We check the
+    // flag here (instead of just "referred_by is set") so the discount only
+    // fires on the FIRST paid checkout, not on every re-subscription.
+    const { data: referralProfile } = await supabase
+      .from("profiles")
+      .select("referred_by, referral_discount_applied")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const shouldApplyRefereeDiscount =
+      !!referralProfile?.referred_by &&
+      !referralProfile.referral_discount_applied &&
+      !!process.env.STRIPE_COUPON_REFEREE;
+
     const customerId = await getOrCreateStripeCustomer(user.id);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
 
@@ -55,6 +70,9 @@ export async function POST(request: Request) {
       line_items: [{ price: plan.stripe_price_id, quantity: 1 }],
       success_url: `${appUrl}/client?checkout=success`,
       cancel_url: `${appUrl}/onboarding?checkout=canceled`,
+      ...(shouldApplyRefereeDiscount
+        ? { discounts: [{ coupon: process.env.STRIPE_COUPON_REFEREE! }] }
+        : {}),
       metadata: {
         client_id: user.id,
         coach_id: plan.coach_id,

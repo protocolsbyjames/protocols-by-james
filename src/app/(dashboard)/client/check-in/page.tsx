@@ -76,7 +76,7 @@ export default function CheckInPage() {
         .eq("client_id", user.id)
         .order("week_of", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setPrevious(data);

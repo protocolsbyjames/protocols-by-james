@@ -41,7 +41,7 @@ export default async function ClientDashboardPage() {
     .select("id, name")
     .eq("client_id", user.id)
     .eq("is_active", true)
-    .single();
+    .maybeSingle();
 
   // Fetch current meal plan
   const { data: mealPlan } = await supabase
@@ -49,7 +49,7 @@ export default async function ClientDashboardPage() {
     .select("id, name")
     .eq("client_id", user.id)
     .eq("is_active", true)
-    .single();
+    .maybeSingle();
 
   // Fetch latest check-in with coach feedback
   const { data: latestCheckIn } = await supabase
@@ -58,7 +58,7 @@ export default async function ClientDashboardPage() {
     .eq("client_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   const daysSinceCheckIn = latestCheckIn
     ? daysSince(latestCheckIn.created_at)

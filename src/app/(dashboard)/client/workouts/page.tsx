@@ -25,7 +25,7 @@ export default async function ClientWorkoutsPage() {
     .eq("client_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (!plan) {
     return (

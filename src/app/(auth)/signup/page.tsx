@@ -97,6 +97,7 @@ function SignupPageContent() {
         await supabase
           .from("invites")
           .update({
+            status: "accepted",
             accepted_by: data.user.id,
             accepted_at: new Date().toISOString(),
           })

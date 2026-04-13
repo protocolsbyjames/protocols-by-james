@@ -15,11 +15,13 @@ import {
 interface CoachFeedbackFormProps {
   checkInId: string;
   existingFeedback: string | null;
+  feedbackId: string | null;
 }
 
 export function CoachFeedbackForm({
   checkInId,
   existingFeedback,
+  feedbackId,
 }: CoachFeedbackFormProps) {
   const [feedback, setFeedback] = useState(existingFeedback ?? "");
   const [submitting, setSubmitting] = useState(false);
@@ -35,12 +37,28 @@ export function CoachFeedbackForm({
     try {
       const supabase = createClient();
 
-      const { error: updateError } = await supabase
-        .from("check_ins")
-        .update({ coach_feedback: feedback })
-        .eq("id", checkInId);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      if (updateError) throw updateError;
+      if (!user) throw new Error("Not authenticated");
+
+      if (feedbackId) {
+        const { error: updateError } = await supabase
+          .from("coach_feedback")
+          .update({ body: feedback, updated_at: new Date().toISOString() })
+          .eq("id", feedbackId);
+        if (updateError) throw updateError;
+      } else {
+        const { error: insertError } = await supabase
+          .from("coach_feedback")
+          .insert({
+            check_in_id: checkInId,
+            coach_id: user.id,
+            body: feedback,
+          });
+        if (insertError) throw insertError;
+      }
 
       setSaved(true);
     } catch (err) {

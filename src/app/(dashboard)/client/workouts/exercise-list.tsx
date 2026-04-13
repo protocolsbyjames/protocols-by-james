@@ -41,12 +41,12 @@ export function ExerciseList({
       await supabase
         .from("exercise_completions")
         .delete()
-        .eq("user_id", userId)
+        .eq("client_id", userId)
         .eq("exercise_id", exerciseId);
     } else {
       setCompletedIds((prev) => new Set(prev).add(exerciseId));
       await supabase.from("exercise_completions").insert({
-        user_id: userId,
+        client_id: userId,
         exercise_id: exerciseId,
       });
     }

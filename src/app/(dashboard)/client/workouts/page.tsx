@@ -20,7 +20,7 @@ export default async function ClientWorkoutsPage() {
   const { data: plan } = await supabase
     .from("workout_plans")
     .select(
-      "id, name, description, weeks, days_per_week, workout_days(id, day_number, name, workout_exercises(id, name, sets, reps, rest_seconds, notes, order_index))"
+      "id, name, description, weeks, days_per_week, workout_days(id, day_number, name, exercises(id, name, sets, reps, rest_seconds, notes, sort_order))"
     )
     .eq("client_id", user.id)
     .order("created_at", { ascending: false })
@@ -52,7 +52,7 @@ export default async function ClientWorkoutsPage() {
   const { data: completions } = await supabase
     .from("exercise_completions")
     .select("exercise_id, completed_at")
-    .eq("user_id", user.id);
+    .eq("client_id", user.id);
 
   const completedIds = new Set((completions ?? []).map((c) => c.exercise_id));
 
@@ -82,8 +82,8 @@ export default async function ClientWorkoutsPage() {
 
       <div className="space-y-4">
         {sortedDays.map((day) => {
-          const exercises = [...(day.workout_exercises ?? [])].sort(
-            (a, b) => a.order_index - b.order_index
+          const exercises = [...(day.exercises ?? [])].sort(
+            (a, b) => a.sort_order - b.sort_order
           );
 
           return (

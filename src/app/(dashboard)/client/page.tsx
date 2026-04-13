@@ -51,10 +51,10 @@ export default async function ClientDashboardPage() {
     .eq("is_active", true)
     .single();
 
-  // Fetch latest check-in
+  // Fetch latest check-in with coach feedback
   const { data: latestCheckIn } = await supabase
     .from("check_ins")
-    .select("id, created_at, coach_feedback")
+    .select("id, created_at, coach_feedback(body)")
     .eq("client_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
@@ -125,7 +125,7 @@ export default async function ClientDashboardPage() {
       </div>
 
       {/* Coach feedback preview */}
-      {latestCheckIn?.coach_feedback && (
+      {latestCheckIn?.coach_feedback?.[0]?.body && (
         <Card className="mt-6">
           <CardHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50">
@@ -138,7 +138,7 @@ export default async function ClientDashboardPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-slate-600 line-clamp-3">
-              {latestCheckIn.coach_feedback}
+              {latestCheckIn.coach_feedback[0].body}
             </p>
           </CardContent>
         </Card>

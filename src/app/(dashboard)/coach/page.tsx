@@ -30,12 +30,16 @@ export default async function CoachDashboardPage() {
 
   const { data: clients } = await supabase
     .from("profiles")
-    .select("id, full_name, avatar_url, subscription_status")
+    .select("id, full_name, avatar_url, subscriptions:subscriptions!subscriptions_client_id_fkey(status)")
     .eq("coach_id", user.id)
     .eq("role", "client")
     .order("full_name");
 
-  const clientList = clients ?? [];
+  const clientList = (clients ?? []).map((c) => ({
+    ...c,
+    subscription_status:
+      (c.subscriptions as { status: string }[] | null)?.[0]?.status ?? null,
+  }));
 
   return (
     <div>

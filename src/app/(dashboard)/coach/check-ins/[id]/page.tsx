@@ -26,10 +26,10 @@ export default async function CoachCheckInDetailPage({
     redirect("/login");
   }
 
-  // Fetch the check-in with photos
+  // Fetch the check-in with photos and coach feedback
   const { data: checkIn, error } = await supabase
     .from("check_ins")
-    .select("*, check_in_photos(*)")
+    .select("*, check_in_photos(*), coach_feedback(*)")
     .eq("id", id)
     .single();
 
@@ -253,7 +253,8 @@ export default async function CoachCheckInDetailPage({
       <div className="pb-8">
         <CoachFeedbackForm
           checkInId={checkIn.id}
-          existingFeedback={checkIn.coach_feedback ?? null}
+          existingFeedback={checkIn.coach_feedback?.[0]?.body ?? null}
+          feedbackId={checkIn.coach_feedback?.[0]?.id ?? null}
         />
       </div>
     </div>

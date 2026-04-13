@@ -63,6 +63,7 @@ function SignupPageContent() {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/onboarding`,
           data: {
             full_name: fullName,
             role,
@@ -94,9 +95,10 @@ function SignupPageContent() {
           .eq("token", inviteToken);
       }
 
-      // If a session was returned, email confirmation is disabled — go straight in
+      // If a session was returned, email confirmation is disabled — send clients
+      // to the paywall to subscribe before they can access the dashboard.
       if (data.session) {
-        router.push("/client");
+        router.push("/onboarding");
         return;
       }
 

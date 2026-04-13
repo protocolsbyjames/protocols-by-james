@@ -45,13 +45,25 @@ export default async function DashboardLayout({
     .from("profiles")
     .select("full_name, avatar_url, role")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!profile) {
     redirect("/login");
   }
 
   const role = profile.role as "coach" | "client";
+
+  // Clients must have an active subscription to access the dashboard.
+  // Coaches bypass the paywall.
+  if (role === "client") {
+    const { data: hasActive } = await supabase.rpc(
+      "current_user_has_active_subscription",
+    );
+    if (hasActive !== true) {
+      redirect("/onboarding");
+    }
+  }
+
   const links = role === "coach" ? coachLinks : clientLinks;
 
   return (

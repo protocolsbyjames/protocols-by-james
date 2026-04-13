@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function SignupPageContent() {
   const router = useRouter();
@@ -24,9 +23,7 @@ function SignupPageContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<"coach" | "client">(
-    inviteToken ? "client" : "coach"
-  );
+  const role = "client";
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [inviteCoachName, setInviteCoachName] = useState<string | null>(null);
@@ -104,12 +101,7 @@ function SignupPageContent() {
           .eq("token", inviteToken);
       }
 
-      // Redirect based on role
-      if (role === "coach") {
-        router.push("/coach");
-      } else {
-        router.push("/client");
-      }
+      router.push("/client");
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);
@@ -134,7 +126,7 @@ function SignupPageContent() {
             <CardDescription>
               {inviteCoachName
                 ? `You've been invited by ${inviteCoachName}`
-                : "Choose your role and fill in your details"}
+                : "Fill in your details to get started"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -144,31 +136,6 @@ function SignupPageContent() {
                   {error}
                 </div>
               )}
-
-              <div className="space-y-2">
-                <Label>I am a</Label>
-                <Tabs
-                  value={role}
-                  onValueChange={(value) =>
-                    setRole(value as "coach" | "client")
-                  }
-                >
-                  <TabsList className="w-full">
-                    <TabsTrigger
-                      value="coach"
-                      className="flex-1"
-                      disabled={!!inviteToken}
-                    >
-                      Coach
-                    </TabsTrigger>
-                    <TabsTrigger value="client" className="flex-1">
-                      Client
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="coach" />
-                  <TabsContent value="client" />
-                </Tabs>
-              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full Name</Label>
@@ -216,9 +183,7 @@ function SignupPageContent() {
                 disabled={loading}
                 size="lg"
               >
-                {loading
-                  ? "Creating account..."
-                  : `Sign up as ${role === "coach" ? "Coach" : "Client"}`}
+                {loading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
           </CardContent>

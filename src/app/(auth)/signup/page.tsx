@@ -26,6 +26,7 @@ function SignupPageContent() {
   const role = "client";
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [inviteCoachName, setInviteCoachName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,6 +62,12 @@ function SignupPageContent() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            full_name: fullName,
+            role,
+          },
+        },
       });
 
       if (signUpError) {
@@ -71,20 +78,6 @@ function SignupPageContent() {
 
       if (!data.user) {
         setError("An unexpected error occurred. Please try again.");
-        setLoading(false);
-        return;
-      }
-
-      // Create profile row
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: data.user.id,
-        email,
-        full_name: fullName,
-        role,
-      });
-
-      if (profileError) {
-        setError(profileError.message);
         setLoading(false);
         return;
       }
@@ -101,7 +94,15 @@ function SignupPageContent() {
           .eq("token", inviteToken);
       }
 
-      router.push("/client");
+      // If a session was returned, email confirmation is disabled — go straight in
+      if (data.session) {
+        router.push("/client");
+        return;
+      }
+
+      // Otherwise show "check your email" confirmation state
+      setSubmitted(true);
+      setLoading(false);
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);
@@ -122,14 +123,29 @@ function SignupPageContent() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Sign Up</CardTitle>
+            <CardTitle>{submitted ? "Check your email" : "Sign Up"}</CardTitle>
             <CardDescription>
-              {inviteCoachName
+              {submitted
+                ? `We sent a confirmation link to ${email}. Click it to activate your account.`
+                : inviteCoachName
                 ? `You've been invited by ${inviteCoachName}`
                 : "Fill in your details to get started"}
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {submitted ? (
+              <div className="text-sm text-muted-foreground space-y-2">
+                <p>Didn&apos;t get it? Check your spam folder, or come back and sign in once you&apos;ve confirmed.</p>
+                <p>
+                  <Link
+                    href="/login"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    Go to sign in
+                  </Link>
+                </p>
+              </div>
+            ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
@@ -186,6 +202,7 @@ function SignupPageContent() {
                 {loading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
+            )}
           </CardContent>
         </Card>
 

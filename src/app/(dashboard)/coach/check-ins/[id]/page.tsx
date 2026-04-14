@@ -31,7 +31,7 @@ export default async function CoachCheckInDetailPage({
     .from("check_ins")
     .select("*, check_in_photos(*), coach_feedback(*)")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error || !checkIn) {
     return (
@@ -49,7 +49,7 @@ export default async function CoachCheckInDetailPage({
     .from("profiles")
     .select("id, full_name, avatar_url")
     .eq("id", checkIn.client_id)
-    .single();
+    .maybeSingle();
 
   // Fetch the previous check-in for comparison
   const { data: previousCheckIn } = await supabase
@@ -59,7 +59,7 @@ export default async function CoachCheckInDetailPage({
     .lt("week_of", checkIn.week_of)
     .order("week_of", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   const measurements = checkIn.measurements as Record<string, number> | null;
   const prevMeasurements = previousCheckIn?.measurements as Record<string, number> | null;
@@ -84,10 +84,10 @@ export default async function CoachCheckInDetailPage({
             <CardTitle className="text-base">Current ({checkIn.week_of})</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {checkIn.weight != null && (
+            {checkIn.weight_lbs != null && (
               <div className="flex items-baseline justify-between">
                 <span className="text-sm text-slate-500">Weight</span>
-                <span className="text-lg font-semibold">{checkIn.weight} lbs</span>
+                <span className="text-lg font-semibold">{checkIn.weight_lbs} lbs</span>
               </div>
             )}
             {measurements && Object.keys(measurements).length > 0 && (
@@ -141,27 +141,27 @@ export default async function CoachCheckInDetailPage({
           <CardContent className="space-y-3">
             {previousCheckIn ? (
               <>
-                {previousCheckIn.weight != null && (
+                {previousCheckIn.weight_lbs != null && (
                   <div className="flex items-baseline justify-between">
                     <span className="text-sm text-slate-500">Weight</span>
                     <div className="text-right">
                       <span className="text-lg font-semibold text-slate-600">
-                        {previousCheckIn.weight} lbs
+                        {previousCheckIn.weight_lbs} lbs
                       </span>
-                      {checkIn.weight != null && (
+                      {checkIn.weight_lbs != null && (
                         <span
                           className={`ml-2 text-sm font-medium ${
-                            checkIn.weight < previousCheckIn.weight
+                            checkIn.weight_lbs < previousCheckIn.weight_lbs
                               ? "text-green-600"
-                              : checkIn.weight > previousCheckIn.weight
+                              : checkIn.weight_lbs > previousCheckIn.weight_lbs
                                 ? "text-red-600"
                                 : "text-slate-400"
                           }`}
                         >
-                          {checkIn.weight < previousCheckIn.weight
-                            ? `${(previousCheckIn.weight - checkIn.weight).toFixed(1)} lbs`
-                            : checkIn.weight > previousCheckIn.weight
-                              ? `+${(checkIn.weight - previousCheckIn.weight).toFixed(1)} lbs`
+                          {checkIn.weight_lbs < previousCheckIn.weight_lbs
+                            ? `${(previousCheckIn.weight_lbs - checkIn.weight_lbs).toFixed(1)} lbs`
+                            : checkIn.weight_lbs > previousCheckIn.weight_lbs
+                              ? `+${(checkIn.weight_lbs - previousCheckIn.weight_lbs).toFixed(1)} lbs`
                               : "No change"}
                         </span>
                       )}

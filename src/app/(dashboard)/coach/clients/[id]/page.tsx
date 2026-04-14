@@ -64,7 +64,7 @@ export default async function CoachClientDetailPage({
     .select("id, full_name, email, avatar_url, created_at")
     .eq("id", clientId)
     .eq("coach_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (profileError || !clientProfile) {
     return (
@@ -93,7 +93,7 @@ export default async function CoachClientDetailPage({
     .eq("coach_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   // Fetch active workout plan with exercises and completions
   const { data: workoutPlan } = await supabase
@@ -105,7 +105,7 @@ export default async function CoachClientDetailPage({
     .eq("coach_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   // Fetch active meal plan with meals
   const { data: mealPlan } = await supabase
@@ -115,7 +115,7 @@ export default async function CoachClientDetailPage({
     .eq("coach_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   // Fetch recent check-ins with photos and feedback
   const { data: checkIns } = await supabase
@@ -202,11 +202,25 @@ export default async function CoachClientDetailPage({
 
       {/* Workout Completions */}
       <section>
-        <div className="flex items-center gap-2">
-          <Dumbbell className="h-5 w-5 text-blue-600" />
-          <h2 className="text-lg font-semibold text-slate-900">
-            Workout Plan
-          </h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Dumbbell className="h-5 w-5 text-blue-600" />
+            <h2 className="text-lg font-semibold text-slate-900">
+              Workout Plan
+            </h2>
+          </div>
+          <Link
+            href={
+              workoutPlan
+                ? `/coach/workouts/${workoutPlan.id}`
+                : `/coach/workouts/new?client=${clientId}`
+            }
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+            )}
+          >
+            {workoutPlan ? "Edit plan" : "Assign plan"}
+          </Link>
         </div>
 
         {workoutPlan ? (
@@ -294,9 +308,23 @@ export default async function CoachClientDetailPage({
 
       {/* Meal Plan */}
       <section>
-        <div className="flex items-center gap-2">
-          <UtensilsCrossed className="h-5 w-5 text-green-600" />
-          <h2 className="text-lg font-semibold text-slate-900">Meal Plan</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <UtensilsCrossed className="h-5 w-5 text-green-600" />
+            <h2 className="text-lg font-semibold text-slate-900">Meal Plan</h2>
+          </div>
+          <Link
+            href={
+              mealPlan
+                ? `/coach/meals/${mealPlan.id}`
+                : `/coach/meals/new?client=${clientId}`
+            }
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+            )}
+          >
+            {mealPlan ? "Edit plan" : "Assign plan"}
+          </Link>
         </div>
 
         {mealPlan ? (

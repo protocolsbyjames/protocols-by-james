@@ -14,6 +14,7 @@ const coachLinks: NavLink[] = [
   { label: "Dashboard", href: "/coach", icon: <LayoutDashboard className="h-4 w-4" /> },
   { label: "Workouts", href: "/coach/workouts", icon: <Dumbbell className="h-4 w-4" /> },
   { label: "Meals", href: "/coach/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
+  { label: "Check-ins", href: "/coach/check-ins", icon: <ClipboardCheck className="h-4 w-4" /> },
   { label: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
 ];
 

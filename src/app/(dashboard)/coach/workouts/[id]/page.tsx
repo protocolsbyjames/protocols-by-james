@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ interface Exercise {
   reps: string;
   rest_seconds: number;
   notes: string;
-  order_index: number;
+  sort_order: number;
 }
 
 interface WorkoutDay {
@@ -64,6 +64,8 @@ export default function WorkoutPlanPage({
   const { id } = use(params);
   const isNew = id === "new";
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const prefilledClientId = searchParams.get("client");
   const supabase = createClient();
 
   const [loading, setLoading] = useState(!isNew);
@@ -74,8 +76,8 @@ export default function WorkoutPlanPage({
     description: "",
     weeks: 4,
     days_per_week: 3,
-    is_template: true,
-    client_id: null,
+    is_template: !prefilledClientId,
+    client_id: prefilledClientId,
   });
   const [days, setDays] = useState<WorkoutDay[]>([]);
 
@@ -87,7 +89,7 @@ export default function WorkoutPlanPage({
       .from("workout_plans")
       .select("*")
       .eq("id", id)
-      .single();
+      .maybeSingle();
 
     if (plan) {
       setForm({
@@ -101,7 +103,7 @@ export default function WorkoutPlanPage({
 
       const { data: dayRows } = await supabase
         .from("workout_days")
-        .select("*, workout_exercises(*)")
+        .select("*, exercises(*)")
         .eq("plan_id", id)
         .order("day_number");
 
@@ -112,10 +114,10 @@ export default function WorkoutPlanPage({
             day_number: d.day_number,
             name: d.name ?? `Day ${d.day_number}`,
             expanded: false,
-            exercises: (d.workout_exercises ?? [])
+            exercises: (d.exercises ?? [])
               .sort(
-                (a: { order_index: number }, b: { order_index: number }) =>
-                  a.order_index - b.order_index
+                (a: { sort_order: number }, b: { sort_order: number }) =>
+                  a.sort_order - b.sort_order
               )
               .map((e: Record<string, unknown>) => ({
                 id: e.id as string,
@@ -124,7 +126,7 @@ export default function WorkoutPlanPage({
                 reps: String(e.reps ?? "10"),
                 rest_seconds: (e.rest_seconds as number) ?? 60,
                 notes: (e.notes as string) ?? "",
-                order_index: (e.order_index as number) ?? 0,
+                sort_order: (e.sort_order as number) ?? 0,
               })),
           }))
         );
@@ -202,7 +204,7 @@ export default function WorkoutPlanPage({
                   reps: "10",
                   rest_seconds: 60,
                   notes: "",
-                  order_index: d.exercises.length,
+                  sort_order: d.exercises.length,
                 },
               ],
             }
@@ -306,11 +308,11 @@ export default function WorkoutPlanPage({
             reps: ex.reps,
             rest_seconds: ex.rest_seconds,
             notes: ex.notes,
-            order_index: idx,
+            sort_order: idx,
           }));
 
           const { error: exError } = await supabase
-            .from("workout_exercises")
+            .from("exercises")
             .insert(exerciseRows);
           if (exError) throw exError;
         }

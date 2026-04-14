@@ -1,166 +1,244 @@
 # PBJ Fitness App — End-to-End Launch Test Script
 
-Run this after completing the Stripe approval playbook. It covers every critical user path before you announce the launch.
+Run this after completing `docs/stripe-go-live.md`. It exercises every paid path in the new 4-tier + VIP add-on lineup, plus the coach portal smoke test.
 
-**Time:** ~30 min
-**Prereqs:** Stripe live mode activated, webhook endpoint configured, migrations run, env vars set in Vercel.
+**Time:** ~60 min (more than the old 3-tier script — there are more flows now)
+**Prereqs:**
+- Stripe live mode activated (or test mode for first dry-run)
+- All env vars set per `docs/stripe-go-live.md` step 3
+- Webhook endpoint configured per playbook step 6
+- Migrations `00003`, `00004` (and any newer) applied
+- Seed `supabase/seed_james_plans.sql` updated to 4-tier structure and run
 
 ---
 
 ## Setup
 
-Open three browser windows, all in **incognito** (to avoid cookie pollution):
+Open four browser windows, all in **incognito**:
 
-1. **Window A — your own Gmail** (use jamesquilter@gmail.com or an alias). You'll be the referrer.
-2. **Window B — a throwaway test email** (e.g. jamesquilter+testreferee@gmail.com — Gmail treats +suffix as the same inbox). You'll be the referee.
-3. **Window C — Supabase dashboard + Stripe dashboard** in separate tabs. You'll be watching data land.
+1. **Window A — your coach Gmail** (jamesquilter@gmail.com). Referrer.
+2. **Window B — throwaway #1** (jamesquilter+sizehybrid@gmail.com). Will buy Shortcut to Size.
+3. **Window C — throwaway #2** (jamesquilter+elite@gmail.com). Will buy Elite + VIP.
+4. **Window D — Supabase + Stripe dashboards** in tabs. Watch data land.
 
-Grab your **Stripe test card:** `4242 4242 4242 4242`, any future expiry, any CVC, any zip.
+Stripe test card: `4242 4242 4242 4242`, any future expiry, any CVC, any zip.
 
-> **Don't use a real card for the first smoke test.** Stripe sandbox = test cards only until you're sure everything works end-to-end.
-
----
-
-## Test 1: Coach onboarding (you, already done)
-
-Skip if you're already set up as a coach. Otherwise:
-
-1. Go to app.protocolsbyjames.com/signup
-2. Sign up, select **Coach** role during onboarding
-3. Verify in Supabase: `select id, role from profiles where email = 'you@example.com';` should show `role = 'coach'`
-4. Grab your **referral code** from Client → Settings → Refer a friend
+> **Always test in Stripe test mode first.** Only flip to live mode after every test below is green.
 
 ---
 
-## Test 2: Referee signs up with referral link
+## Test 1: Coach baseline
 
-In **Window B (throwaway email):**
+Skip if your coach account already exists. Otherwise sign up via Window A, set `role = 'coach'` in `profiles`, and grab your referral code from Settings → Refer a friend.
+
+Note your `profiles.id` — you'll use it as `<coach_id>` throughout.
+
+---
+
+## Test 2: Self-guided hybrid — Shortcut to Size ($39.99 + $14.99/mo)
+
+The hybrid is the trickiest flow because Stripe Checkout has to charge both a one-time line item AND start a subscription in the same session.
+
+In **Window B (sizehybrid email)**:
 
 1. Visit `app.protocolsbyjames.com/signup?ref=<YOUR_REFERRAL_CODE>`
-2. Confirm page shows "James referred you — you'll get $20 off your first month"
-3. Fill out signup form, select **Client** role
-4. Complete email confirmation and onboarding
+2. Sign up as Client, complete onboarding
+3. Pricing → pick **Shortcut to Size**
+4. On Stripe Checkout, confirm **two line items appear**:
+   - "Shortcut to Size — Program access" $39.99 (one-time)
+   - "Shortcut to Size — App access" $14.99/month
+5. Confirm the **referral discount line shows -$20** (assumes referral applies to hybrids — see playbook §7 item 4)
+6. Pay with `4242 4242 4242 4242`
+7. Lands on dashboard → should see program content unlocked
+
+**Verify in Stripe Dashboard:**
+- New customer (sizehybrid email)
+- One **payment intent** for the $39.99 program (succeeded)
+- One **subscription** active at $14.99/mo
+- Coach customer has **-$20.00** balance transaction (if referral applies)
+- First invoice on the $14.99 sub shows the -$20 coupon (or the discount applied to the $39.99 line — depends on which line you attached the coupon to in `/api/checkout`)
 
 **Verify in Supabase:**
-- `select id, referred_by, referral_discount_applied from profiles where email = 'jamesquilter+testreferee@gmail.com';`
-- `referred_by` equals your coach profile ID
-- `referral_discount_applied` still `false`
-- A row exists in `referrals` with `status = 'pending'`, `referrer_id = you`, `referee_id = testreferee`
+- `profiles` row for sizehybrid: `referred_by = <coach_id>`, `referral_discount_applied = true`
+- `subscriptions`: status `active`, product type that distinguishes "self-guided program" from "coaching" (column name TBD per app code change)
+- One row in `program_purchases` (or equivalent) for the $39.99 one-time payment
+- `referrals` row: `status = 'credited'`, `stripe_balance_txn_id` populated
+
+If checkout fails or only one line item charges → stop. This is the #1 expected bug per playbook §7.
 
 ---
 
-## Test 3: Referee completes checkout
+## Test 3: Self-guided hybrid — Shortcut to Shred
 
-In **Window B**, still signed in as referee:
+Repeat Test 2 with a fresh throwaway (`jamesquilter+shredhybrid@gmail.com`), this time picking **Shortcut to Shred**.
 
-1. Go to pricing → pick **Pro** ($69.99)
-2. On Stripe Checkout, confirm the **discount line shows $20 off**
-3. Pay with test card `4242 4242 4242 4242`
-4. Redirects back to the app dashboard
+Goal is to confirm the second hybrid path doesn't accidentally reuse Size's price IDs. Only difference from Test 2 is product name and price IDs.
 
-**Verify in Stripe Dashboard (test mode):**
-- New customer with referee's email
-- Subscription active, first invoice total = $49.99
-- Your **coach Stripe customer** has a balance transaction of **-$20.00**
-
-**Verify in Supabase:**
-- `select status, price_cents from subscriptions where client_id = <testreferee_id>;` → `status = 'active'`, `price_cents = 6999`
-- `select status, stripe_balance_txn_id, credited_at from referrals where referee_id = <testreferee_id>;` → `status = 'credited'`
-- `select referral_discount_applied from profiles where id = <testreferee_id>;` → `true`
-
-If any fail → stop and debug before testing more.
+Quick verify: Stripe customer has Shred line items (not Size), Supabase shows the Shred SKU.
 
 ---
 
-## Test 4: Coach assigns a workout plan
+## Test 4: Performance Coaching ($69.99/mo)
 
-In **Window A (your coach account):**
+In a fresh window (`jamesquilter+performance@gmail.com`):
 
-1. Dashboard → click the testreferee card
-2. On client detail page, click **Assign plan** next to Workout Plan
-3. Editor opens with referee's name pre-selected
-4. Create a simple 2-day plan, save
-
-**Verify in Supabase:**
-- `select id, client_id, name from workout_plans where client_id = <testreferee_id>;` → your new plan
-- `workout_days` has 2 rows for that plan
-- `exercises` has 4 rows across those days
-
----
-
-## Test 5: Referee sees the assigned plan
-
-Back in **Window B (referee):**
-
-1. Refresh dashboard → Workouts
-2. Click into the plan → should see Day 1 and Day 2 with exercises
-
-If it doesn't show: check RLS on `workout_plans` — referee should select their own assigned plan.
-
----
-
-## Test 6: Referee submits a check-in
-
-In **Window B:**
-
-1. Click Check-in in the sidebar
-2. Fill weight, energy, adherence, notes → Submit
-
-**Verify in Supabase:**
-- New row in `check_ins` with `client_id = <testreferee_id>`
-
----
-
-## Test 7: Coach reviews check-in
-
-In **Window A:**
-
-1. Sidebar → Check-ins → queue shows 1 with "Needs feedback" chip
-2. Click in, leave feedback, save
-
-**Verify in Supabase:**
-- New row in `coach_feedback` tied to the check-in
-- Chip flips to "Reviewed"
-
----
-
-## Test 8: Subscription cancel (optional)
-
-In **Window B:**
-
-1. Account → Cancel subscription
-2. Webhook fires → `customer.subscription.updated`
+1. Sign up with referral link
+2. Pricing → **Performance Coaching**
+3. Stripe Checkout: single $69.99/mo line item, -$20 referral discount → first invoice $49.99
+4. Pay, land on dashboard
 
 **Verify:**
-- `subscriptions.status` flips to `canceled` (or `cancel_at_period_end = true`)
-- App: paywall redirect to /onboarding at end of billing period
+- Stripe: subscription active at $69.99, coach has -$20 balance txn
+- Supabase: `subscriptions.status = 'active'`, `price_cents = 6999`, type = coaching tier
+- Referee: `referral_discount_applied = true`
+- `referrals.status = 'credited'`
 
 ---
 
-## Test 9: Cleanup
+## Test 5: Elite Coaching ($129.99/mo) + VIP auto-unlock
+
+In a fresh window (`jamesquilter+elite@gmail.com`):
+
+1. Sign up with referral link
+2. Pricing → **Elite Coaching**
+3. Stripe Checkout: $129.99/mo line item + **$0 VIP Community line** (or VIP not shown but auto-granted in app)
+4. -$20 referral discount → first invoice $109.99
+5. Pay
+
+**Verify in Stripe:**
+- Either ONE subscription with two prices ($129.99 Elite + $0 VIP), OR Elite sub only and VIP entitlement granted in-app — depends on which approach the app code takes (decide in #2). Document the choice in `/api/checkout/route.ts`.
+
+**Verify in Supabase:**
+- `subscriptions` row for Elite, status active
+- VIP entitlement: either a row in `subscription_addons` / `entitlements` table OR a `vip_unlocked_at` column on the Elite subscription. Implementation TBD.
+- App: VIP community section visible in sidebar
+
+**Verify in app:**
+- Elite client sees VIP community area (not gated)
+- Performance/Size/Shred clients do NOT see VIP
+
+---
+
+## Test 6: Add VIP mid-subscription (Performance → Performance + VIP)
+
+This tests upgrading an existing sub by attaching the VIP add-on, without canceling the original.
+
+In **Window from Test 4 (Performance customer)**:
+
+1. Account → Add-ons → **Add VIP Community** ($19.99/mo)
+2. Confirm the modal: "VIP Community will be added to your Performance subscription. You'll be charged $19.99 today, then on each renewal."
+3. Pay
+
+**Verify in Stripe:**
+- The Performance subscription now has TWO line items: $69.99 Performance + $19.99 VIP
+- A prorated invoice for partial-month VIP charge
+- Customer balance unchanged
+
+**Verify in Supabase:**
+- VIP entitlement granted to this client (same shape as Test 5)
+- No new `subscriptions` row — the existing Performance sub is updated
+
+**Verify in app:**
+- VIP community section now visible in sidebar for Performance client
+
+---
+
+## Test 7: Remove VIP add-on
+
+In the same window:
+
+1. Account → Manage subscription → **Remove VIP**
+2. Confirm: "You'll keep VIP access until [end of period], then it won't renew."
+
+**Verify in Stripe:**
+- VIP line item marked `cancel_at_period_end = true` (not removed immediately — keep them whole through paid period)
+
+**Verify in app:**
+- VIP section still visible until end of billing period
+- `entitlements` row has an `expires_at` set to period end
+
+---
+
+## Test 8: Referral credit accounting
+
+Across all the tests above, you should have **5 referrals credited**: Size, Shred, Performance, Elite, and (depending on policy) maybe VIP.
+
+In Window A (coach):
+- Settings → Referrals → balance shows correct total
+- Stripe coach customer balance shows the matching credit total
+
+If you decided VIP add-ons don't trigger referral (per playbook §7 item 4), then Test 6 should NOT have created a new credit — verify only by checking balance didn't change after the Test 6 charge.
+
+---
+
+## Test 9: Coach portal smoke test
+
+Switch back to **Window A**. The coach should see all 5 test clients in the dashboard.
+
+For each client:
+1. Click into client detail
+2. Hit **Assign workout plan** → quick 1-day plan, save
+3. Verify the client window can see the assigned plan (refresh)
+
+For one client (pick the Performance one):
+1. Switch to client window → submit a check-in (weight, energy, notes)
+2. Switch back to coach window → Check-ins queue shows it as "Needs feedback"
+3. Click in, leave feedback, save
+4. Switch to client window → check-in shows coach feedback
+
+**Verify in Supabase:**
+- `workout_plans` rows: 5 (one per client)
+- `check_ins` row: 1
+- `coach_feedback` row: 1, tied to that check-in
+
+---
+
+## Test 10: Subscription cancel paths
+
+For each subscription type, run cancel and verify webhook handling:
+
+| Subscription | Expected on cancel |
+|---|---|
+| Shortcut to Size hybrid | One-time $39.99 stays charged; $14.99/mo sub cancels at period end; program content stays accessible until period end |
+| Shortcut to Shred hybrid | Same as Size |
+| Performance | Standard cancel-at-period-end; coaching access until period end |
+| Elite | Standard cancel-at-period-end; coaching + VIP access until period end |
+| Performance + VIP add-on | Cancel main sub → both lines cancel together at period end |
+
+For each, verify `subscriptions.status` flips to `canceled` (or `cancel_at_period_end = true`) and the app paywall kicks in at the right time.
+
+---
+
+## Test 11: Cleanup
 
 ```sql
-delete from profiles where email = 'jamesquilter+testreferee@gmail.com';
+delete from profiles where email like 'jamesquilter+%@gmail.com';
 ```
-Delete test customer in Stripe (test mode only). Clear your own coach credit balance if you want.
+
+Delete all test customers in Stripe dashboard (test mode only — never delete live customers). Reset coach credit balance if you want a clean slate before going live.
 
 ---
 
 ## Go-live checklist
 
-- [ ] Toggle Stripe "Test mode" → "Live mode"
-- [ ] Re-create 3 prices + `REFERRAL20` coupon in live mode
-- [ ] Update Vercel env vars with **live-mode** price IDs + coupon ID
+- [ ] All tests above green in Stripe **test** mode
+- [ ] Toggle Stripe **Test mode → Live mode**
+- [ ] Re-create all 5 products + 7 prices + `REFERRAL20` coupon in live mode
+- [ ] Update Vercel env vars with **live-mode** price IDs (8 of them — see playbook step 3)
 - [ ] Re-add webhook endpoint in live mode, update `STRIPE_WEBHOOK_SECRET`
 - [ ] Redeploy
-- [ ] Run one real transaction on Starter with your own card
+- [ ] Run **one** real transaction on Shortcut to Size with your own card
 - [ ] Refund it to yourself
-- [ ] Announce
+- [ ] Run **one** real Performance subscription test, immediately cancel, refund partial
+- [ ] Announce launch
 
 ---
 
-## Known edge cases
+## Known edge cases and gotchas
 
-- **Referral code case-sensitivity:** stored lowercase, signup query normalizes
-- **Referee changing email later:** doesn't retroactively update `profiles.referred_by`
-- **Webhook idempotency:** `referrals.status = 'pending'` guard prevents double-credit on duplicate delivery
+- **Hybrid checkout coupon attachment:** the -$20 coupon must attach to a specific line item in the Checkout Session. If it attaches to the one-time program line, the discount feels like "$20 off the program." If it attaches to the recurring line, it feels like "$20 off your first month of app access." Pick one consistently across Size and Shred — easiest to attach to the recurring line so behavior matches the coaching tiers.
+- **Elite VIP grant:** if you model VIP as a separate $0 line item under the Elite sub, you can use Stripe entitlements directly. If you grant VIP via app-side logic, you have to remember to revoke it on Elite cancel. The line-item approach is more idempotent — recommended.
+- **Hybrid renewal failure:** if a Size customer's $14.99 renewal fails, the $39.99 program purchase is unaffected. Make sure the app paywall only blocks the recurring app access, not the one-time program PDFs / videos.
+- **Referral code case-sensitivity:** stored lowercase, signup query normalizes.
+- **Webhook idempotency:** `referrals.status = 'pending'` guard prevents double-credit on duplicate delivery.
+- **VIP add-on referral policy:** decide explicitly (playbook §7 item 4). The default in this script assumes VIP add-on does NOT trigger a new referral credit.

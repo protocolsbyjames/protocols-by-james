@@ -42,7 +42,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero */}
-      <section className="relative flex flex-col items-center justify-center bg-zinc-950 px-6 py-32 text-center sm:py-40">
+      <section className="relative flex flex-col items-center justify-center bg-[#0d1628] px-6 py-32 text-center sm:py-40">
         {/* Subtle gradient overlay */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.04)_0%,transparent_70%)]" />
 
@@ -117,7 +117,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="bg-zinc-950 px-6 py-20 text-center">
+      <section className="bg-[#0d1628] px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             Ready to start?

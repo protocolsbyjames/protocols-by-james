@@ -60,16 +60,16 @@ export default async function WaitingPage() {
   const firstName = profile.full_name?.split(/\s+/)[0] ?? "there";
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-16">
+    <div className="min-h-screen bg-background px-4 py-16">
       <div className="mx-auto max-w-2xl space-y-8">
         <div className="text-center space-y-3">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-700">
             <Clock className="h-6 w-6" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             All set, {firstName}.
           </h1>
-          <p className="text-slate-600 max-w-md mx-auto">
+          <p className="text-muted-foreground max-w-md mx-auto">
             Your intake is in. I&apos;m reviewing everything personally and
             building out your custom plan.
           </p>
@@ -110,7 +110,7 @@ export default async function WaitingPage() {
           <CardHeader>
             <CardTitle>In the meantime</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm text-slate-600">
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
               If you think of anything else you forgot to mention, or you want
               to change an answer, just reply to any of the emails from me —
@@ -149,14 +149,14 @@ function Step({
           "mt-0.5 h-6 w-6 shrink-0 rounded-full flex items-center justify-center text-xs font-semibold",
           done
             ? "bg-emerald-100 text-emerald-700"
-            : "bg-slate-100 text-slate-500",
+            : "bg-muted text-muted-foreground",
         )}
       >
         {done ? <Check className="h-3.5 w-3.5" /> : "·"}
       </div>
       <div className="flex-1">
-        <div className="font-medium text-slate-900">{title}</div>
-        <div className="text-sm text-slate-600">{body}</div>
+        <div className="font-medium text-foreground">{title}</div>
+        <div className="text-sm text-muted-foreground">{body}</div>
       </div>
     </li>
   );

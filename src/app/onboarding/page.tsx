@@ -99,13 +99,13 @@ export default async function OnboardingPage({
   const { checkout } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-12 sm:py-20">
+    <div className="min-h-screen bg-background px-4 py-12 sm:py-20">
       <div className="mx-auto max-w-5xl space-y-16">
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Choose your plan
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             Pick a self-guided program or get 1:1 coaching. Cancel anytime from
             your settings.
           </p>
@@ -133,10 +133,10 @@ export default async function OnboardingPage({
         {selfGuided.length > 0 && (
           <section className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold text-slate-900">
+              <h2 className="text-xl font-semibold text-foreground">
                 Self-Guided Programs
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 One-time program access plus $14.99/mo for the training app.
               </p>
             </div>
@@ -160,7 +160,7 @@ export default async function OnboardingPage({
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between gap-6">
                     {plan.features.length > 0 && (
-                      <ul className="space-y-2 text-sm text-slate-600">
+                      <ul className="space-y-2 text-sm text-muted-foreground">
                         {plan.features.map((feature, i) => (
                           <li key={i} className="flex items-start gap-2">
                             <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
@@ -180,10 +180,10 @@ export default async function OnboardingPage({
         {coaching.length > 0 && (
           <section className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold text-slate-900">
+              <h2 className="text-xl font-semibold text-foreground">
                 1:1 Coaching
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 Direct coaching with James — check-ins, feedback, and plan
                 adjustments.
               </p>
@@ -212,7 +212,7 @@ export default async function OnboardingPage({
                     </CardHeader>
                     <CardContent className="flex flex-1 flex-col justify-between gap-6">
                       {plan.features.length > 0 && (
-                        <ul className="space-y-2 text-sm text-slate-600">
+                        <ul className="space-y-2 text-sm text-muted-foreground">
                           {plan.features.map((feature, i) => (
                             <li key={i} className="flex items-start gap-2">
                               <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />

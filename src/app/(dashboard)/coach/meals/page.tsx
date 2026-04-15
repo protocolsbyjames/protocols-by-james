@@ -55,15 +55,15 @@ export default async function CoachMealsPage() {
           </CardHeader>
           <CardContent>
             {clientName && (
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-muted-foreground">
                 Assigned to{" "}
-                <span className="font-medium text-slate-800">
+                <span className="font-medium text-foreground">
                   {clientName}
                 </span>
               </p>
             )}
             {!clientName && !plan.is_template && (
-              <p className="text-sm text-slate-400">Unassigned</p>
+              <p className="text-sm text-muted-foreground">Unassigned</p>
             )}
           </CardContent>
         </Card>
@@ -75,10 +75,10 @@ export default async function CoachMealsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Meal Plans
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Create and manage meal plans for your clients.
           </p>
         </div>
@@ -91,14 +91,14 @@ export default async function CoachMealsPage() {
       </div>
 
       {allPlans.length === 0 ? (
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <UtensilsCrossed className="h-7 w-7 text-slate-400" />
+        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <UtensilsCrossed className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-900">
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
             No meal plans yet
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Create your first meal plan to get started.
           </p>
           <div className="mt-6">
@@ -129,7 +129,7 @@ export default async function CoachMealsPage() {
           <TabsContent value={1}>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {templates.length === 0 ? (
-                <p className="col-span-full text-sm text-slate-500">
+                <p className="col-span-full text-sm text-muted-foreground">
                   No templates yet.
                 </p>
               ) : (
@@ -143,7 +143,7 @@ export default async function CoachMealsPage() {
           <TabsContent value={2}>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {assigned.length === 0 ? (
-                <p className="col-span-full text-sm text-slate-500">
+                <p className="col-span-full text-sm text-muted-foreground">
                   No assigned plans yet.
                 </p>
               ) : (

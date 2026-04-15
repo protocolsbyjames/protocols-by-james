@@ -77,16 +77,16 @@ export default async function PeptalksPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Peptalks
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Incoming consultation bookings from the marketing site.
         </p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           Upcoming ({upcoming.length})
         </h2>
         {upcoming.length === 0 ? (
@@ -109,7 +109,7 @@ export default async function PeptalksPage() {
 
       {past.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Past ({past.length})
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -152,7 +152,7 @@ function BookingCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
-        <div className="flex items-center gap-2 text-slate-600">
+        <div className="flex items-center gap-2 text-muted-foreground">
           <Mail className="h-4 w-4 shrink-0" />
           <a
             href={`mailto:${booking.email}`}
@@ -161,14 +161,14 @@ function BookingCard({
             {booking.email}
           </a>
         </div>
-        <div className="flex items-center gap-2 text-slate-600">
+        <div className="flex items-center gap-2 text-muted-foreground">
           <Phone className="h-4 w-4 shrink-0" />
           <a href={`tel:${booking.phone}`} className="hover:underline">
             {booking.phone}
           </a>
         </div>
         {booking.meet_link && (
-          <div className="flex items-center gap-2 text-slate-600">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Video className="h-4 w-4 shrink-0" />
             <a
               href={booking.meet_link}
@@ -180,8 +180,8 @@ function BookingCard({
             </a>
           </div>
         )}
-        <div className="rounded-md bg-slate-50 p-3 text-slate-700">
-          <div className="mb-1 flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="rounded-md bg-background p-3 text-foreground">
+          <div className="mb-1 flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             <Calendar className="h-3 w-3" />
             Topic
           </div>

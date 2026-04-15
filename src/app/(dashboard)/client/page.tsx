@@ -67,10 +67,10 @@ export default async function ClientDashboardPage() {
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Your Dashboard
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Overview of your current programs and activity.
         </p>
       </div>
@@ -137,7 +137,7 @@ export default async function ClientDashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600 line-clamp-3">
+            <p className="text-sm text-muted-foreground line-clamp-3">
               {latestCheckIn.coach_feedback[0].body}
             </p>
           </CardContent>
@@ -146,7 +146,7 @@ export default async function ClientDashboardPage() {
 
       {/* Quick actions */}
       <div className="mt-8">
-        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
           Quick Actions
         </h2>
         <div className="mt-3 flex flex-wrap gap-3">

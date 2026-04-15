@@ -80,13 +80,13 @@ export default async function QuestionnairePage({
   const err = (await searchParams).error;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4">
+    <div className="min-h-screen bg-background py-12 px-4">
       <div className="mx-auto max-w-3xl space-y-8">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Tell me about you.
           </h1>
-          <p className="text-sm text-slate-600 max-w-2xl">
+          <p className="text-sm text-muted-foreground max-w-2xl">
             This is the deep intake. The more honest detail you give me here,
             the better the plan I can build for you. Everything is private and
             only visible to me. Takes about 10 minutes.
@@ -165,7 +165,7 @@ export default async function QuestionnairePage({
                   name="trainingExperience"
                   required
                   defaultValue={existing?.training_experience ?? ""}
-                  className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
+                  className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
                 >
                   <option value="">— Select —</option>
                   <option value="beginner">Beginner (&lt;1 year)</option>

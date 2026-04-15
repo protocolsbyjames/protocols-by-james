@@ -69,10 +69,10 @@ export default async function CoachClientDetailPage({
   if (profileError || !clientProfile) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-foreground">
           Client not found
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           This client may not exist or is not assigned to you.
         </p>
         <Link
@@ -165,7 +165,7 @@ export default async function CoachClientDetailPage({
       <div className="flex items-start gap-4">
         <Link
           href="/coach"
-          className="mt-1 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          className="mt-1 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-muted-foreground"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -174,15 +174,15 @@ export default async function CoachClientDetailPage({
             src={clientProfile.avatar_url ?? undefined}
             alt={clientProfile.full_name ?? "Client"}
           />
-          <AvatarFallback className="bg-slate-100 text-lg font-medium text-slate-600">
+          <AvatarFallback className="bg-muted text-lg font-medium text-muted-foreground">
             {getInitials(clientProfile.full_name)}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             {clientProfile.full_name}
           </h1>
-          <p className="text-sm text-slate-500">{clientProfile.email}</p>
+          <p className="text-sm text-muted-foreground">{clientProfile.email}</p>
           <div className="mt-2 flex items-center gap-2">
             <Badge
               variant={
@@ -191,7 +191,7 @@ export default async function CoachClientDetailPage({
             >
               {subscription?.status ?? "No subscription"}
             </Badge>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-muted-foreground">
               Client since {formatDate(clientProfile.created_at)}
             </span>
           </div>
@@ -205,7 +205,7 @@ export default async function CoachClientDetailPage({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Dumbbell className="h-5 w-5 text-blue-600" />
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-foreground">
               Workout Plan
             </h2>
           </div>
@@ -226,16 +226,16 @@ export default async function CoachClientDetailPage({
         {workoutPlan ? (
           <div className="mt-4 space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-slate-700">
+              <p className="text-sm font-medium text-foreground">
                 {workoutPlan.name}
               </p>
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-muted-foreground">
                 {completedExercises}/{totalExercises} exercises completed
               </span>
             </div>
 
             {/* Progress bar */}
-            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full rounded-full bg-blue-500 transition-all"
                 style={{
@@ -249,7 +249,7 @@ export default async function CoachClientDetailPage({
               {sortedDays.map((day) => {
                 const dayExercises = day.exercises ?? [];
                 return (
-                  <Card key={day.id} className="border-slate-200">
+                  <Card key={day.id} className="border-border">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm">
                         {day.name || `Day ${day.day_number}`}
@@ -271,25 +271,25 @@ export default async function CoachClientDetailPage({
                             {done ? (
                               <CheckCircle2 className="h-4 w-4 text-green-500" />
                             ) : (
-                              <Circle className="h-4 w-4 text-slate-300" />
+                              <Circle className="h-4 w-4 text-muted-foreground" />
                             )}
                             <span
                               className={
                                 done
-                                  ? "text-slate-400 line-through"
-                                  : "text-slate-700"
+                                  ? "text-muted-foreground line-through"
+                                  : "text-foreground"
                               }
                             >
                               {ex.name}
                             </span>
-                            <span className="ml-auto text-xs text-slate-400">
+                            <span className="ml-auto text-xs text-muted-foreground">
                               {ex.sets} x {ex.reps}
                             </span>
                           </div>
                         );
                       })}
                       {dayExercises.length === 0 && (
-                        <p className="text-xs text-slate-400">No exercises</p>
+                        <p className="text-xs text-muted-foreground">No exercises</p>
                       )}
                     </CardContent>
                   </Card>
@@ -298,7 +298,7 @@ export default async function CoachClientDetailPage({
             </div>
           </div>
         ) : (
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-muted-foreground">
             No workout plan assigned.
           </p>
         )}
@@ -311,7 +311,7 @@ export default async function CoachClientDetailPage({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <UtensilsCrossed className="h-5 w-5 text-green-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Meal Plan</h2>
+            <h2 className="text-lg font-semibold text-foreground">Meal Plan</h2>
           </div>
           <Link
             href={
@@ -329,22 +329,22 @@ export default async function CoachClientDetailPage({
 
         {mealPlan ? (
           <div className="mt-4 space-y-3">
-            <p className="text-sm font-medium text-slate-700">
+            <p className="text-sm font-medium text-foreground">
               {mealPlan.name}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               {Object.entries(mealsByType).map(([type, typeMeals]) => (
-                <Card key={type} className="border-slate-200">
+                <Card key={type} className="border-border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm capitalize">{type}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {typeMeals.map((meal) => (
                       <div key={meal.id}>
-                        <p className="text-sm font-medium text-slate-700">
+                        <p className="text-sm font-medium text-foreground">
                           {meal.name}
                         </p>
-                        <div className="flex gap-3 text-xs text-slate-500">
+                        <div className="flex gap-3 text-xs text-muted-foreground">
                           {meal.calories != null && (
                             <span>{meal.calories} cal</span>
                           )}
@@ -366,7 +366,7 @@ export default async function CoachClientDetailPage({
             </div>
           </div>
         ) : (
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-muted-foreground">
             No meal plan assigned.
           </p>
         )}
@@ -378,7 +378,7 @@ export default async function CoachClientDetailPage({
       <section>
         <div className="flex items-center gap-2">
           <ClipboardCheck className="h-5 w-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-slate-900">
+          <h2 className="text-lg font-semibold text-foreground">
             Check-in History
           </h2>
         </div>
@@ -394,7 +394,7 @@ export default async function CoachClientDetailPage({
               )?.[0];
 
               return (
-                <Card key={checkIn.id} className="border-slate-200">
+                <Card key={checkIn.id} className="border-border">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm">
@@ -424,10 +424,10 @@ export default async function CoachClientDetailPage({
                     {/* Client notes */}
                     {checkIn.notes && (
                       <div>
-                        <p className="text-xs font-medium text-slate-500">
+                        <p className="text-xs font-medium text-muted-foreground">
                           Client Notes
                         </p>
-                        <p className="mt-1 text-sm text-slate-600 line-clamp-2">
+                        <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                           {checkIn.notes}
                         </p>
                       </div>
@@ -437,8 +437,8 @@ export default async function CoachClientDetailPage({
                     {photos.length > 0 && (
                       <div>
                         <div className="flex items-center gap-1">
-                          <Camera className="h-3.5 w-3.5 text-slate-400" />
-                          <p className="text-xs font-medium text-slate-500">
+                          <Camera className="h-3.5 w-3.5 text-muted-foreground" />
+                          <p className="text-xs font-medium text-muted-foreground">
                             Progress Photos
                           </p>
                         </div>
@@ -459,7 +459,7 @@ export default async function CoachClientDetailPage({
                                 alt={photo.pose_type}
                                 className="aspect-[3/4] w-full object-cover"
                               />
-                              <p className="mt-1 text-center text-xs capitalize text-slate-400">
+                              <p className="mt-1 text-center text-xs capitalize text-muted-foreground">
                                 {photo.pose_type}
                               </p>
                             </div>
@@ -477,7 +477,7 @@ export default async function CoachClientDetailPage({
                             Your Feedback
                           </p>
                         </div>
-                        <p className="mt-1 text-sm text-slate-700 line-clamp-3">
+                        <p className="mt-1 text-sm text-foreground line-clamp-3">
                           {feedback.body}
                         </p>
                       </div>
@@ -496,7 +496,7 @@ export default async function CoachClientDetailPage({
             })}
           </div>
         ) : (
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-muted-foreground">
             No check-ins submitted yet.
           </p>
         )}

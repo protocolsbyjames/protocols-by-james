@@ -153,7 +153,7 @@ export default function CheckInPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-foreground" />
       </div>
     );
   }
@@ -187,19 +187,19 @@ export default function CheckInPage() {
   return (
     <div className="mx-auto max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Weekly Check-in
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Record your progress for this week.
         </p>
       </div>
 
       {/* Previous check-in reference */}
       {previous && (
-        <Card className="mt-6 bg-slate-50">
+        <Card className="mt-6 bg-background">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Previous Check-in ({previous.week_of})
             </CardTitle>
           </CardHeader>
@@ -207,25 +207,25 @@ export default function CheckInPage() {
             <div className="grid grid-cols-2 gap-3 text-sm">
               {previous.weight && (
                 <div>
-                  <span className="text-slate-500">Weight:</span>{" "}
+                  <span className="text-muted-foreground">Weight:</span>{" "}
                   <span className="font-medium">{previous.weight} lbs</span>
                 </div>
               )}
               {previous.energy_level && (
                 <div>
-                  <span className="text-slate-500">Energy:</span>{" "}
+                  <span className="text-muted-foreground">Energy:</span>{" "}
                   <span className="font-medium">{previous.energy_level}/5</span>
                 </div>
               )}
               {previous.adherence_rating && (
                 <div>
-                  <span className="text-slate-500">Adherence:</span>{" "}
+                  <span className="text-muted-foreground">Adherence:</span>{" "}
                   <span className="font-medium">{previous.adherence_rating}/5</span>
                 </div>
               )}
               {previous.measurements && (
                 <div className="col-span-2">
-                  <span className="text-slate-500">Measurements:</span>{" "}
+                  <span className="text-muted-foreground">Measurements:</span>{" "}
                   <span className="font-medium">
                     {Object.entries(previous.measurements)
                       .map(([k, v]) => `${k}: ${v}"`)
@@ -336,14 +336,14 @@ export default function CheckInPage() {
                   className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${
                     energyLevel === level
                       ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                      : "border-border bg-card text-foreground hover:border-primary"
                   }`}
                 >
                   {level}
                 </button>
               ))}
             </div>
-            <div className="mt-1 flex justify-between text-xs text-slate-400">
+            <div className="mt-1 flex justify-between text-xs text-muted-foreground">
               <span>Very Low</span>
               <span>Very High</span>
             </div>
@@ -366,14 +366,14 @@ export default function CheckInPage() {
                   className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${
                     adherenceRating === level
                       ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                      : "border-border bg-card text-foreground hover:border-primary"
                   }`}
                 >
                   {level}
                 </button>
               ))}
             </div>
-            <div className="mt-1 flex justify-between text-xs text-slate-400">
+            <div className="mt-1 flex justify-between text-xs text-muted-foreground">
               <span>Not at all</span>
               <span>Perfectly</span>
             </div>

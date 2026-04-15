@@ -54,16 +54,16 @@ export default async function CoachWorkoutsPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2 text-sm text-slate-500">
+            <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
               {plan.weeks != null && <span>{plan.weeks} weeks</span>}
               {plan.days_per_week != null && (
                 <span>&middot; {plan.days_per_week} days/week</span>
               )}
             </div>
             {clientName && (
-              <p className="mt-2 text-sm text-slate-600">
+              <p className="mt-2 text-sm text-muted-foreground">
                 Assigned to{" "}
-                <span className="font-medium text-slate-800">
+                <span className="font-medium text-foreground">
                   {clientName}
                 </span>
               </p>
@@ -78,10 +78,10 @@ export default async function CoachWorkoutsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Workout Plans
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Create and manage workout plans for your clients.
           </p>
         </div>
@@ -94,14 +94,14 @@ export default async function CoachWorkoutsPage() {
       </div>
 
       {allPlans.length === 0 ? (
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <Dumbbell className="h-7 w-7 text-slate-400" />
+        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <Dumbbell className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-900">
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
             No workout plans yet
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Create your first workout plan to get started.
           </p>
           <div className="mt-6">
@@ -132,7 +132,7 @@ export default async function CoachWorkoutsPage() {
           <TabsContent value={1}>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {templates.length === 0 ? (
-                <p className="col-span-full text-sm text-slate-500">
+                <p className="col-span-full text-sm text-muted-foreground">
                   No templates yet.
                 </p>
               ) : (
@@ -146,7 +146,7 @@ export default async function CoachWorkoutsPage() {
           <TabsContent value={2}>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {assigned.length === 0 ? (
-                <p className="col-span-full text-sm text-slate-500">
+                <p className="col-span-full text-sm text-muted-foreground">
                   No assigned plans yet.
                 </p>
               ) : (

@@ -70,7 +70,7 @@ export default async function DashboardLayout({
   const links = role === "coach" ? coachLinks : clientLinks;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Sidebar
         role={role}
         profile={{

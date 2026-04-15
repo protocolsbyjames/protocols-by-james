@@ -22,8 +22,8 @@ interface WeightChartProps {
 export function WeightChart({ data }: WeightChartProps) {
   if (data.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50">
-        <p className="text-sm text-slate-500">
+      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border bg-background">
+        <p className="text-sm text-muted-foreground">
           No weight data available yet.
         </p>
       </div>

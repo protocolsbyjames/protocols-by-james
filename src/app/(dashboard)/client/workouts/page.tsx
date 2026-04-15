@@ -30,17 +30,17 @@ export default async function ClientWorkoutsPage() {
   if (!plan) {
     return (
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           My Workouts
         </h1>
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <Dumbbell className="h-7 w-7 text-slate-400" />
+        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <Dumbbell className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-900">
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
             No workout plan assigned
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Your coach hasn&apos;t assigned a workout plan yet.
           </p>
         </div>
@@ -63,12 +63,12 @@ export default async function ClientWorkoutsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           My Workouts
         </h1>
-        <p className="mt-1 text-sm text-slate-500">{plan.name}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{plan.name}</p>
         {plan.description && (
-          <p className="mt-2 text-sm text-slate-600">{plan.description}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
         )}
         <div className="mt-3 flex gap-3">
           {plan.weeks != null && (
@@ -95,7 +95,7 @@ export default async function ClientWorkoutsPage() {
               </CardHeader>
               <CardContent>
                 {exercises.length === 0 ? (
-                  <p className="text-sm text-slate-400">
+                  <p className="text-sm text-muted-foreground">
                     No exercises for this day.
                   </p>
                 ) : (

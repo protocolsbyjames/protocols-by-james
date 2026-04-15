@@ -61,7 +61,7 @@ export function SubscribeButton({
   return (
     <div className="space-y-3">
       {vipAddon && (
-        <label className="flex items-start gap-2 rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-700">
+        <label className="flex items-start gap-2 rounded-md border border-border bg-card p-3 text-sm text-foreground">
           <input
             type="checkbox"
             className="mt-0.5"

@@ -163,6 +163,13 @@ export async function POST(request: Request) {
 
     const customerId = await getOrCreateStripeCustomer(user.id);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
+    // After payment, hand off to the marketing site for agreement signing.
+    // The marketing site verifies the Stripe session server-side, mints a
+    // short-lived signed cookie, and walks the client through signing the
+    // Consulting & Coaching Agreement before sending them back to the app
+    // for the questionnaire. See protocols-by-james-website/src/app/onboarding.
+    const marketingUrl =
+      process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://protocolsbyjames.com";
 
     // Metadata: the webhook uses these to write program_purchases and
     // subscription_addons rows. attached_addon_plan_ids is a JSON-encoded
@@ -183,7 +190,7 @@ export async function POST(request: Request) {
       customer: customerId,
       mode: "subscription",
       line_items,
-      success_url: `${appUrl}/client?checkout=success`,
+      success_url: `${marketingUrl}/onboarding/agreement?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/onboarding?checkout=canceled`,
       ...(shouldApplyRefereeDiscount
         ? { discounts: [{ coupon: process.env.STRIPE_COUPON_REFEREE! }] }

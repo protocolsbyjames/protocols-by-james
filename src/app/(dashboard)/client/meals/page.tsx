@@ -32,17 +32,17 @@ export default async function ClientMealsPage() {
   if (!plan) {
     return (
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           My Meals
         </h1>
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <UtensilsCrossed className="h-7 w-7 text-slate-400" />
+        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <UtensilsCrossed className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-900">
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
             No meal plan assigned
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Your coach hasn&apos;t assigned a meal plan yet.
           </p>
         </div>
@@ -68,12 +68,12 @@ export default async function ClientMealsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           My Meals
         </h1>
-        <p className="mt-1 text-sm text-slate-500">{plan.name}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{plan.name}</p>
         {plan.description && (
-          <p className="mt-2 text-sm text-slate-600">{plan.description}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
         )}
       </div>
 
@@ -85,26 +85,26 @@ export default async function ClientMealsPage() {
         <CardContent>
           <div className="grid grid-cols-4 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-2xl font-bold text-foreground">
                 {totalCalories}
               </p>
-              <p className="text-xs text-slate-500">Calories</p>
+              <p className="text-xs text-muted-foreground">Calories</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-blue-600">
                 {totalProtein}g
               </p>
-              <p className="text-xs text-slate-500">Protein</p>
+              <p className="text-xs text-muted-foreground">Protein</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-amber-600">
                 {totalCarbs}g
               </p>
-              <p className="text-xs text-slate-500">Carbs</p>
+              <p className="text-xs text-muted-foreground">Carbs</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-rose-600">{totalFat}g</p>
-              <p className="text-xs text-slate-500">Fat</p>
+              <p className="text-xs text-muted-foreground">Fat</p>
             </div>
           </div>
         </CardContent>
@@ -122,15 +122,15 @@ export default async function ClientMealsPage() {
                 {group.meals.map((meal) => (
                   <div
                     key={meal.id}
-                    className="rounded-lg border border-slate-100 bg-slate-50 p-4"
+                    className="rounded-lg border border-border bg-background p-4"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-sm font-medium text-foreground">
                           {meal.name}
                         </p>
                         {meal.description && (
-                          <p className="mt-1 text-xs text-slate-500">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             {meal.description}
                           </p>
                         )}
@@ -160,7 +160,7 @@ export default async function ClientMealsPage() {
         ))}
 
         {grouped.length === 0 && (
-          <p className="py-8 text-center text-sm text-slate-500">
+          <p className="py-8 text-center text-sm text-muted-foreground">
             No meals have been added to this plan yet.
           </p>
         )}

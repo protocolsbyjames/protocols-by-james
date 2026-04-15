@@ -91,11 +91,12 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  /* Indigo navy brand background (#0b1227) — matches marketing site */
+  --background: #0b1227;
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: #0d1628;
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: #0d1628;
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.75 0.035 90);
   --primary-foreground: oklch(0.205 0 0);
@@ -114,7 +115,7 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: #0d1628;
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);

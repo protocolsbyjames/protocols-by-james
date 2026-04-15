@@ -8,10 +8,12 @@ import {
   Settings,
   ClipboardCheck,
   TrendingUp,
+  Phone,
 } from "lucide-react";
 
 const coachLinks: NavLink[] = [
   { label: "Dashboard", href: "/coach", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { label: "Peptalks", href: "/coach/peptalks", icon: <Phone className="h-4 w-4" /> },
   { label: "Workouts", href: "/coach/workouts", icon: <Dumbbell className="h-4 w-4" /> },
   { label: "Meals", href: "/coach/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
   { label: "Check-ins", href: "/coach/check-ins", icon: <ClipboardCheck className="h-4 w-4" /> },
@@ -68,7 +70,7 @@ export default async function DashboardLayout({
   const links = role === "coach" ? coachLinks : clientLinks;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Sidebar
         role={role}
         profile={{

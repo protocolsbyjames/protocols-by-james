@@ -58,8 +58,8 @@ function NavLinks({
             onClick={onNavigate}
             className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
               isActive
-                ? "bg-slate-800 text-white"
-                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                ? "bg-accent text-white"
+                : "text-muted-foreground hover:bg-accent hover:text-white"
             }`}
           >
             {link.icon}
@@ -79,10 +79,10 @@ function UserSection({
   onSignOut: () => void;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-slate-700 p-3">
+    <div className="flex items-center gap-3 rounded-lg border border-border p-3">
       <Avatar className="h-8 w-8">
         <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? "User"} />
-        <AvatarFallback className="bg-slate-700 text-xs text-white">
+        <AvatarFallback className="bg-secondary text-xs text-white">
           {getInitials(profile.full_name)}
         </AvatarFallback>
       </Avatar>
@@ -95,7 +95,7 @@ function UserSection({
         variant="ghost"
         size="icon"
         onClick={onSignOut}
-        className="h-8 w-8 text-slate-400 hover:bg-slate-800 hover:text-white"
+        className="h-8 w-8 text-muted-foreground hover:bg-accent hover:text-white"
         aria-label="Sign out"
       >
         <LogOut className="h-4 w-4" />
@@ -117,13 +117,13 @@ export function Sidebar({ role, profile, links }: SidebarProps) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col bg-slate-900">
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col bg-sidebar border-r border-sidebar-border">
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-6">
           <div className="px-3">
             <h1 className="text-lg font-bold tracking-tight text-white">
               Protocols By James
             </h1>
-            <p className="mt-0.5 text-xs text-slate-400 capitalize">{role} Portal</p>
+            <p className="mt-0.5 text-xs text-muted-foreground capitalize">{role} Portal</p>
           </div>
 
           <NavLinks links={links} pathname={pathname} />
@@ -135,19 +135,19 @@ export function Sidebar({ role, profile, links }: SidebarProps) {
       </aside>
 
       {/* Mobile header + sheet */}
-      <div className="sticky top-0 z-40 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
+      <div className="sticky top-0 z-40 flex items-center gap-3 border-b border-sidebar-border bg-sidebar px-4 py-3 lg:hidden">
         <Sheet>
           <SheetTrigger render={<Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Open menu" />}>
             <Menu className="h-5 w-5" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 bg-slate-900 p-0 border-none">
+          <SheetContent side="left" className="w-64 bg-sidebar p-0 border-none">
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
             <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-6">
               <div className="px-3">
                 <h1 className="text-lg font-bold tracking-tight text-white">
                   Protocols By James
                 </h1>
-                <p className="mt-0.5 text-xs text-slate-400 capitalize">{role} Portal</p>
+                <p className="mt-0.5 text-xs text-muted-foreground capitalize">{role} Portal</p>
               </div>
 
               <NavLinks links={links} pathname={pathname} />
@@ -158,7 +158,7 @@ export function Sidebar({ role, profile, links }: SidebarProps) {
             </div>
           </SheetContent>
         </Sheet>
-        <h1 className="text-sm font-semibold text-slate-900">Protocols By James</h1>
+        <h1 className="text-sm font-semibold text-foreground">Protocols By James</h1>
       </div>
     </>
   );

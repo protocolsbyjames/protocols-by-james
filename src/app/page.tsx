@@ -42,7 +42,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero */}
-      <section className="relative flex flex-col items-center justify-center bg-zinc-950 px-6 py-32 text-center sm:py-40">
+      <section className="relative flex flex-col items-center justify-center bg-[#0d1628] px-6 py-32 text-center sm:py-40">
         {/* Subtle gradient overlay */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.04)_0%,transparent_70%)]" />
 
@@ -83,10 +83,10 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="bg-white px-6 py-24 sm:py-32">
+      <section className="bg-background px-6 py-24 sm:py-32">
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Everything you need to reach your goals
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-zinc-600">
@@ -102,7 +102,7 @@ export default function HomePage() {
                 className="border-0 bg-zinc-50 shadow-none ring-0"
               >
                 <CardHeader>
-                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-900 text-white">
+                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                     <feature.icon className="h-5 w-5" />
                   </div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
@@ -117,7 +117,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="bg-zinc-950 px-6 py-20 text-center">
+      <section className="bg-[#0d1628] px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             Ready to start?
@@ -138,7 +138,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-white px-6 py-8 text-center text-sm text-zinc-500">
+      <footer className="border-t border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground">
         &copy; {new Date().getFullYear()} Protocols By James. All rights
         reserved.
       </footer>

@@ -36,8 +36,8 @@ export default async function CoachCheckInDetailPage({
   if (error || !checkIn) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <h2 className="text-lg font-semibold text-slate-900">Check-in not found</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="text-lg font-semibold text-foreground">Check-in not found</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           This check-in may have been deleted or you do not have access.
         </p>
       </div>
@@ -67,10 +67,10 @@ export default async function CoachCheckInDetailPage({
   return (
     <div className="mx-auto max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Check-in Review
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           {clientProfile?.full_name ?? "Client"} &mdash; Week of{" "}
           {checkIn.week_of}
         </p>
@@ -86,17 +86,17 @@ export default async function CoachCheckInDetailPage({
           <CardContent className="space-y-3">
             {checkIn.weight_lbs != null && (
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-slate-500">Weight</span>
+                <span className="text-sm text-muted-foreground">Weight</span>
                 <span className="text-lg font-semibold">{checkIn.weight_lbs} lbs</span>
               </div>
             )}
             {measurements && Object.keys(measurements).length > 0 && (
               <div>
-                <span className="text-sm text-slate-500">Measurements</span>
+                <span className="text-sm text-muted-foreground">Measurements</span>
                 <div className="mt-1 grid grid-cols-2 gap-1 text-sm">
                   {Object.entries(measurements).map(([key, val]) => (
                     <div key={key} className="flex justify-between">
-                      <span className="capitalize text-slate-600">{key}</span>
+                      <span className="capitalize text-muted-foreground">{key}</span>
                       <span className="font-medium">{val}&quot;</span>
                     </div>
                   ))}
@@ -107,7 +107,7 @@ export default async function CoachCheckInDetailPage({
             {/* Current photos */}
             {checkIn.check_in_photos && checkIn.check_in_photos.length > 0 && (
               <div>
-                <span className="text-sm text-slate-500">Photos</span>
+                <span className="text-sm text-muted-foreground">Photos</span>
                 <div className="mt-2 grid grid-cols-3 gap-2">
                   {checkIn.check_in_photos.map(
                     (photo: { id: string; photo_url: string; pose_type: string }) => (
@@ -117,7 +117,7 @@ export default async function CoachCheckInDetailPage({
                           alt={photo.pose_type}
                           className="aspect-[3/4] w-full object-cover"
                         />
-                        <p className="mt-1 text-center text-xs capitalize text-slate-500">
+                        <p className="mt-1 text-center text-xs capitalize text-muted-foreground">
                           {photo.pose_type}
                         </p>
                       </div>
@@ -130,9 +130,9 @@ export default async function CoachCheckInDetailPage({
         </Card>
 
         {/* Previous check-in */}
-        <Card className="bg-slate-50">
+        <Card className="bg-background">
           <CardHeader>
-            <CardTitle className="text-base text-slate-600">
+            <CardTitle className="text-base text-muted-foreground">
               {previousCheckIn
                 ? `Previous (${previousCheckIn.week_of})`
                 : "Previous"}
@@ -143,9 +143,9 @@ export default async function CoachCheckInDetailPage({
               <>
                 {previousCheckIn.weight_lbs != null && (
                   <div className="flex items-baseline justify-between">
-                    <span className="text-sm text-slate-500">Weight</span>
+                    <span className="text-sm text-muted-foreground">Weight</span>
                     <div className="text-right">
-                      <span className="text-lg font-semibold text-slate-600">
+                      <span className="text-lg font-semibold text-muted-foreground">
                         {previousCheckIn.weight_lbs} lbs
                       </span>
                       {checkIn.weight_lbs != null && (
@@ -155,7 +155,7 @@ export default async function CoachCheckInDetailPage({
                               ? "text-green-600"
                               : checkIn.weight_lbs > previousCheckIn.weight_lbs
                                 ? "text-red-600"
-                                : "text-slate-400"
+                                : "text-muted-foreground"
                           }`}
                         >
                           {checkIn.weight_lbs < previousCheckIn.weight_lbs
@@ -170,12 +170,12 @@ export default async function CoachCheckInDetailPage({
                 )}
                 {prevMeasurements && Object.keys(prevMeasurements).length > 0 && (
                   <div>
-                    <span className="text-sm text-slate-500">Measurements</span>
+                    <span className="text-sm text-muted-foreground">Measurements</span>
                     <div className="mt-1 grid grid-cols-2 gap-1 text-sm">
                       {Object.entries(prevMeasurements).map(([key, val]) => (
                         <div key={key} className="flex justify-between">
-                          <span className="capitalize text-slate-600">{key}</span>
-                          <span className="font-medium text-slate-600">{val}&quot;</span>
+                          <span className="capitalize text-muted-foreground">{key}</span>
+                          <span className="font-medium text-muted-foreground">{val}&quot;</span>
                         </div>
                       ))}
                     </div>
@@ -186,7 +186,7 @@ export default async function CoachCheckInDetailPage({
                 {previousCheckIn.check_in_photos &&
                   previousCheckIn.check_in_photos.length > 0 && (
                     <div>
-                      <span className="text-sm text-slate-500">Photos</span>
+                      <span className="text-sm text-muted-foreground">Photos</span>
                       <div className="mt-2 grid grid-cols-3 gap-2">
                         {previousCheckIn.check_in_photos.map(
                           (photo: { id: string; photo_url: string; pose_type: string }) => (
@@ -196,7 +196,7 @@ export default async function CoachCheckInDetailPage({
                                 alt={photo.pose_type}
                                 className="aspect-[3/4] w-full object-cover"
                               />
-                              <p className="mt-1 text-center text-xs capitalize text-slate-500">
+                              <p className="mt-1 text-center text-xs capitalize text-muted-foreground">
                                 {photo.pose_type}
                               </p>
                             </div>
@@ -207,7 +207,7 @@ export default async function CoachCheckInDetailPage({
                   )}
               </>
             ) : (
-              <p className="text-sm text-slate-400">No previous check-in available.</p>
+              <p className="text-sm text-muted-foreground">No previous check-in available.</p>
             )}
           </CardContent>
         </Card>
@@ -221,13 +221,13 @@ export default async function CoachCheckInDetailPage({
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div>
-              <span className="text-sm text-slate-500">Energy Level</span>
+              <span className="text-sm text-muted-foreground">Energy Level</span>
               <p className="text-lg font-semibold">
                 {checkIn.energy_level != null ? `${checkIn.energy_level}/5` : "N/A"}
               </p>
             </div>
             <div>
-              <span className="text-sm text-slate-500">Adherence</span>
+              <span className="text-sm text-muted-foreground">Adherence</span>
               <p className="text-lg font-semibold">
                 {checkIn.adherence_rating != null
                   ? `${checkIn.adherence_rating}/5`
@@ -238,8 +238,8 @@ export default async function CoachCheckInDetailPage({
 
           {checkIn.notes && (
             <div>
-              <span className="text-sm text-slate-500">Client Notes</span>
-              <p className="mt-1 whitespace-pre-wrap text-sm text-slate-700">
+              <span className="text-sm text-muted-foreground">Client Notes</span>
+              <p className="mt-1 whitespace-pre-wrap text-sm text-foreground">
                 {checkIn.notes}
               </p>
             </div>

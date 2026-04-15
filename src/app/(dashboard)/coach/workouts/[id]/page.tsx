@@ -329,7 +329,7 @@ export default function WorkoutPlanPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-sm text-slate-500">Loading...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     );
   }
@@ -344,7 +344,7 @@ export default function WorkoutPlanPage({
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {isNew ? "Create Workout Plan" : "Edit Workout Plan"}
         </h1>
       </div>
@@ -417,7 +417,7 @@ export default function WorkoutPlanPage({
                 type="checkbox"
                 checked={form.is_template}
                 onChange={(e) => updateForm("is_template", e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300"
+                className="h-4 w-4 rounded border-border"
               />
               <Label htmlFor="is_template">Save as template</Label>
             </div>
@@ -461,7 +461,7 @@ export default function WorkoutPlanPage({
           </CardHeader>
           <CardContent className="space-y-4">
             {days.length === 0 && (
-              <p className="py-8 text-center text-sm text-slate-500">
+              <p className="py-8 text-center text-sm text-muted-foreground">
                 No days added yet. Click &quot;Add Day&quot; to get started.
               </p>
             )}
@@ -469,7 +469,7 @@ export default function WorkoutPlanPage({
             {days.map((day, dayIndex) => (
               <div
                 key={dayIndex}
-                className="rounded-lg border border-slate-200"
+                className="rounded-lg border border-border"
               >
                 <div
                   className="flex cursor-pointer items-center justify-between px-4 py-3"
@@ -477,9 +477,9 @@ export default function WorkoutPlanPage({
                 >
                   <div className="flex items-center gap-3">
                     {day.expanded ? (
-                      <ChevronDown className="h-4 w-4 text-slate-400" />
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <ChevronRight className="h-4 w-4 text-slate-400" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     )}
                     <Input
                       value={day.name}
@@ -490,7 +490,7 @@ export default function WorkoutPlanPage({
                       onClick={(e) => e.stopPropagation()}
                       className="h-8 w-48 font-medium"
                     />
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-muted-foreground">
                       {day.exercises.length} exercise
                       {day.exercises.length !== 1 && "s"}
                     </span>
@@ -503,17 +503,17 @@ export default function WorkoutPlanPage({
                       removeDay(dayIndex);
                     }}
                   >
-                    <Trash2 className="h-4 w-4 text-slate-400" />
+                    <Trash2 className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </div>
 
                 {day.expanded && (
-                  <div className="border-t border-slate-200 px-4 py-4">
+                  <div className="border-t border-border px-4 py-4">
                     <div className="space-y-3">
                       {day.exercises.map((exercise, exIndex) => (
                         <div
                           key={exIndex}
-                          className="rounded-md border border-slate-100 bg-slate-50 p-3"
+                          className="rounded-md border border-border bg-background p-3"
                         >
                           <div className="grid gap-3 sm:grid-cols-5">
                             <div className="sm:col-span-2">
@@ -591,7 +591,7 @@ export default function WorkoutPlanPage({
                                   removeExercise(dayIndex, exIndex)
                                 }
                               >
-                                <Trash2 className="h-3.5 w-3.5 text-slate-400" />
+                                <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
                               </Button>
                             </div>
                           </div>

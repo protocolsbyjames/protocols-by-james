@@ -31,10 +31,10 @@ export default async function ClientProgressPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-foreground">
           Failed to load progress
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Something went wrong. Please try again later.
         </p>
       </div>
@@ -63,10 +63,10 @@ export default async function ClientProgressPage() {
   return (
     <div className="mx-auto max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Your Progress
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Track your journey over time.
         </p>
       </div>
@@ -125,14 +125,14 @@ export default async function ClientProgressPage() {
 
       {/* Photo Timeline */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Photo Timeline</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="text-lg font-semibold text-foreground">Photo Timeline</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Progress photos grouped by check-in date.
         </p>
 
         {allCheckIns.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-            <p className="text-sm text-slate-500">No check-ins yet.</p>
+          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+            <p className="text-sm text-muted-foreground">No check-ins yet.</p>
           </div>
         ) : (
           <div className="mt-6 space-y-6">
@@ -149,7 +149,7 @@ export default async function ClientProgressPage() {
                         {ci.week_of}
                       </CardTitle>
                       {ci.weight != null && (
-                        <span className="text-sm text-slate-500">
+                        <span className="text-sm text-muted-foreground">
                           {ci.weight} lbs
                         </span>
                       )}
@@ -161,21 +161,21 @@ export default async function ClientProgressPage() {
                         {photos.map((photo) => (
                           <div
                             key={photo.id}
-                            className="overflow-hidden rounded-lg bg-slate-100"
+                            className="overflow-hidden rounded-lg bg-muted"
                           >
                             <img
                               src={photo.photo_url}
                               alt={photo.pose_type}
                               className="aspect-[3/4] w-full object-cover"
                             />
-                            <p className="py-1 text-center text-xs capitalize text-slate-500">
+                            <p className="py-1 text-center text-xs capitalize text-muted-foreground">
                               {photo.pose_type}
                             </p>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400">
+                      <p className="text-sm text-muted-foreground">
                         No photos for this check-in.
                       </p>
                     )}

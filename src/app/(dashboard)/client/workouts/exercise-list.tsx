@@ -62,19 +62,19 @@ export function ExerciseList({
               type="checkbox"
               checked={completedIds.has(exercise.id)}
               onChange={() => toggleCompletion(exercise.id)}
-              className="mt-1 h-4 w-4 rounded border-slate-300"
+              className="mt-1 h-4 w-4 rounded border-border"
             />
             <div className="flex-1">
               <p
                 className={`text-sm font-medium ${
                   completedIds.has(exercise.id)
-                    ? "text-slate-400 line-through"
-                    : "text-slate-900"
+                    ? "text-muted-foreground line-through"
+                    : "text-foreground"
                 }`}
               >
                 {exercise.name}
               </p>
-              <div className="mt-1 flex gap-3 text-xs text-slate-500">
+              <div className="mt-1 flex gap-3 text-xs text-muted-foreground">
                 <span>
                   {exercise.sets} x {exercise.reps}
                 </span>
@@ -83,7 +83,7 @@ export function ExerciseList({
                 )}
               </div>
               {exercise.notes && (
-                <p className="mt-1 text-xs text-slate-400">{exercise.notes}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{exercise.notes}</p>
               )}
             </div>
           </div>

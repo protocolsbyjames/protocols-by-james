@@ -45,10 +45,10 @@ export default async function CoachDashboardPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Client Dashboard
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage your clients and their programs.
           </p>
         </div>
@@ -56,14 +56,14 @@ export default async function CoachDashboardPage() {
       </div>
 
       {clientList.length === 0 ? (
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <Users className="h-7 w-7 text-slate-400" />
+        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <Users className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-900">
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
             No clients yet
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Invite your first client to get started.
           </p>
           <div className="mt-6">
@@ -81,7 +81,7 @@ export default async function CoachDashboardPage() {
                       src={client.avatar_url ?? undefined}
                       alt={client.full_name ?? "Client"}
                     />
-                    <AvatarFallback className="bg-slate-100 text-sm font-medium text-slate-600">
+                    <AvatarFallback className="bg-muted text-sm font-medium text-muted-foreground">
                       {getInitials(client.full_name)}
                     </AvatarFallback>
                   </Avatar>

@@ -78,12 +78,12 @@ export function PhotoUpload({ onUpload, poseType, userId }: PhotoUploadProps) {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <Label className="text-sm font-medium text-slate-700">
+      <Label className="text-sm font-medium text-foreground">
         {poseLabels[poseType]} Pose
       </Label>
 
       <div
-        className="relative flex h-40 w-32 cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 transition-colors hover:border-slate-400"
+        className="relative flex h-40 w-32 cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-border bg-background transition-colors hover:border-muted-foreground"
         onClick={() => inputRef.current?.click()}
       >
         {preview ? (
@@ -95,7 +95,7 @@ export function PhotoUpload({ onUpload, poseType, userId }: PhotoUploadProps) {
         ) : (
           <div className="flex flex-col items-center gap-1 px-2 text-center">
             <svg
-              className="h-6 w-6 text-slate-400"
+              className="h-6 w-6 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -107,13 +107,13 @@ export function PhotoUpload({ onUpload, poseType, userId }: PhotoUploadProps) {
                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"
               />
             </svg>
-            <span className="text-xs text-slate-500">Upload</span>
+            <span className="text-xs text-muted-foreground">Upload</span>
           </div>
         )}
 
         {uploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/70">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+          <div className="absolute inset-0 flex items-center justify-center bg-background/70">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-foreground" />
           </div>
         )}
       </div>

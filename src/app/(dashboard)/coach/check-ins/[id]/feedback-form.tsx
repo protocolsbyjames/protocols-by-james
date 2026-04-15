@@ -83,7 +83,7 @@ export function CoachFeedbackForm({
         {existingFeedback && (
           <div className="mb-4 rounded-lg bg-blue-50 p-3">
             <p className="text-xs font-medium text-blue-600">Current Feedback</p>
-            <p className="mt-1 whitespace-pre-wrap text-sm text-slate-700">
+            <p className="mt-1 whitespace-pre-wrap text-sm text-foreground">
               {existingFeedback}
             </p>
           </div>

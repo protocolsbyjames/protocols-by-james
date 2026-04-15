@@ -78,10 +78,10 @@ export default async function CoachCheckInsPage() {
     <div className="mx-auto max-w-5xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Check-ins
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Review client check-ins and leave feedback.
           </p>
         </div>
@@ -93,14 +93,14 @@ export default async function CoachCheckInsPage() {
       </div>
 
       {checkIns.length === 0 ? (
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <ClipboardCheck className="h-7 w-7 text-slate-400" />
+        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border py-16">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <ClipboardCheck className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-900">
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
             No check-ins yet
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Your clients haven&apos;t submitted any check-ins yet.
           </p>
         </div>
@@ -128,7 +128,7 @@ export default async function CoachCheckInsPage() {
                             src={client?.avatar_url ?? undefined}
                             alt={client?.full_name ?? "Client"}
                           />
-                          <AvatarFallback className="bg-slate-100 text-sm font-medium text-slate-600">
+                          <AvatarFallback className="bg-muted text-sm font-medium text-muted-foreground">
                             {getInitials(client?.full_name ?? null)}
                           </AvatarFallback>
                         </Avatar>
@@ -157,10 +157,10 @@ export default async function CoachCheckInsPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex gap-4 text-xs text-slate-500">
+                    <div className="flex gap-4 text-xs text-muted-foreground">
                       {checkIn.weight_lbs != null && (
                         <span>
-                          <span className="font-medium text-slate-700">
+                          <span className="font-medium text-foreground">
                             {checkIn.weight_lbs}
                           </span>{" "}
                           lbs
@@ -169,7 +169,7 @@ export default async function CoachCheckInsPage() {
                       {checkIn.energy_level != null && (
                         <span>
                           Energy:{" "}
-                          <span className="font-medium text-slate-700">
+                          <span className="font-medium text-foreground">
                             {checkIn.energy_level}/5
                           </span>
                         </span>
@@ -177,7 +177,7 @@ export default async function CoachCheckInsPage() {
                       {checkIn.adherence_rating != null && (
                         <span>
                           Adherence:{" "}
-                          <span className="font-medium text-slate-700">
+                          <span className="font-medium text-foreground">
                             {checkIn.adherence_rating}/5
                           </span>
                         </span>

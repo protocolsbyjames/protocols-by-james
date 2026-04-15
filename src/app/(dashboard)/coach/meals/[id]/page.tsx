@@ -235,7 +235,7 @@ export default function MealPlanPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-sm text-slate-500">Loading...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     );
   }
@@ -250,7 +250,7 @@ export default function MealPlanPage({
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {isNew ? "Create Meal Plan" : "Edit Meal Plan"}
         </h1>
       </div>
@@ -292,7 +292,7 @@ export default function MealPlanPage({
                 type="checkbox"
                 checked={form.is_template}
                 onChange={(e) => updateForm("is_template", e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300"
+                className="h-4 w-4 rounded border-border"
               />
               <Label htmlFor="is_template">Save as template</Label>
             </div>
@@ -343,7 +343,7 @@ export default function MealPlanPage({
               </CardHeader>
               <CardContent className="space-y-4">
                 {typeMeals.length === 0 && (
-                  <p className="py-4 text-center text-sm text-slate-400">
+                  <p className="py-4 text-center text-sm text-muted-foreground">
                     No {type} items added yet.
                   </p>
                 )}
@@ -351,7 +351,7 @@ export default function MealPlanPage({
                 {typeMeals.map((meal) => (
                   <div
                     key={meal.originalIndex}
-                    className="rounded-md border border-slate-100 bg-slate-50 p-4"
+                    className="rounded-md border border-border bg-background p-4"
                   >
                     <div className="mb-3 flex items-start justify-between">
                       <div className="flex-1 space-y-3">
@@ -392,7 +392,7 @@ export default function MealPlanPage({
                         className="ml-2 h-8 w-8"
                         onClick={() => removeMeal(meal.originalIndex)}
                       >
-                        <Trash2 className="h-4 w-4 text-slate-400" />
+                        <Trash2 className="h-4 w-4 text-muted-foreground" />
                       </Button>
                     </div>
 

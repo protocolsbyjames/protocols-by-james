@@ -10,7 +10,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Protocols By James",
   description:
-    "Personalized fitness coaching platform — custom workout plans, meal plans, and direct coach feedback to help you reach your goals.",
+    "Personalized fitness coaching platform: custom workout plans, meal plans, and direct coach feedback to help you reach your goals.",
 };
 
 export default function RootLayout({

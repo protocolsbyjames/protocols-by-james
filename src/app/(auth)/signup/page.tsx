@@ -154,7 +154,7 @@ function SignupPageContent() {
                 : inviteCoachName
                 ? `You've been invited by ${inviteCoachName}`
                 : referrerName
-                ? `${referrerName} referred you — you'll get $20 off your first month`
+                ? `${referrerName} referred you. You'll get $20 off your first month`
                 : "Fill in your details to get started"}
             </CardDescription>
           </CardHeader>

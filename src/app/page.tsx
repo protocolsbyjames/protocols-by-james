@@ -55,7 +55,7 @@ export default function HomePage() {
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
             Personalized workout programming, nutrition coaching, and
-            accountability — all in one place. Stop guessing and start making
+            accountability. All in one place. Stop guessing and start making
             real progress.
           </p>
 
@@ -90,7 +90,7 @@ export default function HomePage() {
               Everything you need to reach your goals
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-zinc-600">
-              A complete coaching experience — not just a PDF plan. Real
+              A complete coaching experience. Not just a PDF plan. Real
               guidance, real results.
             </p>
           </div>

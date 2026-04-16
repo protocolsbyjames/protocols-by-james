@@ -264,7 +264,7 @@ export default function ClientSettingsPage() {
         <CardHeader>
           <CardTitle>Refer a friend</CardTitle>
           <CardDescription>
-            Share your link — when a friend signs up and pays for their first
+            Share your link. When a friend signs up and pays for their first
             month, you get a $20 credit and they get $20 off.
           </CardDescription>
         </CardHeader>

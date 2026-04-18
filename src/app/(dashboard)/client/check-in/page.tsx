@@ -264,7 +264,7 @@ export default function CheckInPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Measurements (inches)</CardTitle>
-            <CardDescription>Optional — enter any measurements you have.</CardDescription>
+            <CardDescription>Optional: enter any measurements you have.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">

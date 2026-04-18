@@ -113,7 +113,7 @@ export default async function OnboardingPage({
 
         {checkout === "canceled" && (
           <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-            Checkout was canceled. No charge was made — pick a plan to try
+            Checkout was canceled. No charge was made. Pick a plan to try
             again.
           </div>
         )}
@@ -184,7 +184,7 @@ export default async function OnboardingPage({
                 1:1 Coaching
               </h2>
               <p className="text-sm text-muted-foreground">
-                Direct coaching with James — check-ins, feedback, and plan
+                Direct coaching with James: check-ins, feedback, and plan
                 adjustments.
               </p>
             </div>

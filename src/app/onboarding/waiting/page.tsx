@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { Check, Clock, MessageCircle } from "lucide-react";
 
 export const metadata = {
-  title: "Hang tight — Protocols by James",
+  title: "Hang tight | Protocols by James",
 };
 
 export const dynamic = "force-dynamic";
@@ -113,7 +113,7 @@ export default async function WaitingPage() {
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
               If you think of anything else you forgot to mention, or you want
-              to change an answer, just reply to any of the emails from me —
+              to change an answer, just reply to any of the emails from me.
               I&apos;ll make sure it gets into your plan.
             </p>
             <Link

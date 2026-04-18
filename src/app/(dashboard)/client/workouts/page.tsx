@@ -2,11 +2,15 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Dumbbell } from "lucide-react";
 import { ExerciseList } from "./exercise-list";
+import { WorkoutDatePicker } from "./date-picker";
 
-export default async function ClientWorkoutsPage() {
+export default async function ClientWorkoutsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
   const supabase = await createClient();
 
   const {
@@ -16,6 +20,10 @@ export default async function ClientWorkoutsPage() {
   if (!user) {
     redirect("/login");
   }
+
+  const resolvedParams = await searchParams;
+  const workoutDate =
+    resolvedParams.date ?? new Date().toISOString().split("T")[0];
 
   const { data: plan } = await supabase
     .from("workout_plans")
@@ -63,12 +71,19 @@ export default async function ClientWorkoutsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          My Workouts
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{plan.name}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              My Workouts
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">{plan.name}</p>
+          </div>
+          <WorkoutDatePicker currentDate={workoutDate} />
+        </div>
         {plan.description && (
-          <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {plan.description}
+          </p>
         )}
         <div className="mt-3 flex gap-3">
           {plan.weeks != null && (
@@ -110,6 +125,7 @@ export default async function ClientWorkoutsPage() {
                     }))}
                     completedIds={Array.from(completedIds)}
                     userId={user.id}
+                    workoutDate={workoutDate}
                   />
                 )}
               </CardContent>

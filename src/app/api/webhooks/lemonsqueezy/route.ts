@@ -170,6 +170,16 @@ export async function POST(request: Request) {
           }
         }
 
+        // Auto-assign workout plan for self-guided purchases
+        if (planType === "self_guided") {
+          try {
+            await assignTemplateWorkoutPlan(clientId, coachId, planId);
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.error("Workout plan auto-assignment failed:", msg);
+          }
+        }
+
         // Referral credit (simplified — no Stripe balance, just mark credited)
         try {
           await creditReferrerIfPending(clientId);
@@ -285,6 +295,14 @@ export async function POST(request: Request) {
           console.error("Failed to upsert program_purchase:", programError);
         }
 
+        // Auto-assign workout plan for self-guided purchases
+        try {
+          await assignTemplateWorkoutPlan(clientId, coachId, planId);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error("Workout plan auto-assignment failed:", msg);
+        }
+
         break;
       }
 
@@ -327,6 +345,140 @@ function mapLsStatus(lsStatus: string): string {
  * mark the referral as credited in our database. James can issue credits
  * manually or through LS discount codes.
  */
+/**
+ * Clone a template workout plan and assign it to a client.
+ * Looks up the coaching_plan by ID, finds a matching template workout_plan
+ * by name, then deep-clones plan → days → exercises.
+ */
+async function assignTemplateWorkoutPlan(clientId: string, coachId: string, planId: string) {
+  // 1. Look up the coaching plan to get its name
+  const { data: coachingPlan } = await supabaseAdmin
+    .from("coaching_plans")
+    .select("name")
+    .eq("id", planId)
+    .maybeSingle();
+
+  if (!coachingPlan) {
+    console.log(`No coaching plan found for ID ${planId}, skipping workout assignment`);
+    return;
+  }
+
+  // 2. Find the matching template workout plan by name (case-insensitive match)
+  const { data: templates } = await supabaseAdmin
+    .from("workout_plans")
+    .select("id, name, description, weeks, days_per_week")
+    .eq("is_template", true)
+    .is("client_id", null);
+
+  if (!templates || templates.length === 0) {
+    console.log("No template workout plans found");
+    return;
+  }
+
+  // Match by coaching plan name appearing in the workout plan name
+  const planNameLower = coachingPlan.name.toLowerCase();
+  const template = templates.find((t) =>
+    planNameLower.includes(t.name.toLowerCase()) ||
+    t.name.toLowerCase().includes(planNameLower)
+  );
+
+  if (!template) {
+    console.log(`No matching template for coaching plan "${coachingPlan.name}"`);
+    return;
+  }
+
+  // 3. Check if the client already has this plan assigned (avoid duplicates)
+  const { data: existingPlan } = await supabaseAdmin
+    .from("workout_plans")
+    .select("id")
+    .eq("client_id", clientId)
+    .ilike("name", `%${template.name}%`)
+    .maybeSingle();
+
+  if (existingPlan) {
+    console.log(`Client ${clientId} already has plan "${template.name}", skipping`);
+    return;
+  }
+
+  // 4. Clone the workout plan
+  const { data: newPlan, error: planError } = await supabaseAdmin
+    .from("workout_plans")
+    .insert({
+      name: template.name,
+      description: template.description,
+      weeks: template.weeks,
+      days_per_week: template.days_per_week,
+      is_template: false,
+      client_id: clientId,
+      coach_id: coachId,
+    })
+    .select("id")
+    .single();
+
+  if (planError || !newPlan) {
+    console.error("Failed to clone workout plan:", planError);
+    return;
+  }
+
+  // 5. Clone the days
+  const { data: templateDays } = await supabaseAdmin
+    .from("workout_days")
+    .select("id, day_number, name")
+    .eq("plan_id", template.id)
+    .order("day_number", { ascending: true });
+
+  if (!templateDays || templateDays.length === 0) {
+    console.log("Template has no days to clone");
+    return;
+  }
+
+  for (const day of templateDays) {
+    const { data: newDay, error: dayError } = await supabaseAdmin
+      .from("workout_days")
+      .insert({
+        plan_id: newPlan.id,
+        day_number: day.day_number,
+        name: day.name,
+      })
+      .select("id")
+      .single();
+
+    if (dayError || !newDay) {
+      console.error(`Failed to clone day ${day.day_number}:`, dayError);
+      continue;
+    }
+
+    // 6. Clone exercises for this day
+    const { data: templateExercises } = await supabaseAdmin
+      .from("exercises")
+      .select("name, sets, reps, rest_seconds, notes, sort_order")
+      .eq("day_id", day.id)
+      .order("sort_order", { ascending: true });
+
+    if (templateExercises && templateExercises.length > 0) {
+      const exerciseRows = templateExercises.map((ex) => ({
+        day_id: newDay.id,
+        name: ex.name,
+        sets: ex.sets,
+        reps: ex.reps,
+        rest_seconds: ex.rest_seconds,
+        notes: ex.notes,
+        sort_order: ex.sort_order,
+      }));
+
+      const { error: exError } = await supabaseAdmin
+        .from("exercises")
+        .insert(exerciseRows);
+
+      if (exError) {
+        console.error(`Failed to clone exercises for day ${day.day_number}:`, exError);
+      }
+    }
+  }
+
+  console.log(`Assigned workout plan "${template.name}" to client ${clientId} (plan ID: ${newPlan.id})`);
+}
+
 async function creditReferrerIfPending(refereeId: string) {
   const { data: referral } = await supabaseAdmin
     .from("referrals")

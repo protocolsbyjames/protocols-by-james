@@ -16,6 +16,8 @@ import {
   UtensilsCrossed,
   ClipboardCheck,
   MessageSquare,
+  BookOpen,
+  ArrowRight,
 } from "lucide-react";
 
 function daysSince(date: string): number {
@@ -60,6 +62,14 @@ export default async function ClientDashboardPage() {
     .limit(1)
     .maybeSingle();
 
+  // Check if this is a brand-new client (no workout logs yet)
+  const { count: logCount } = await supabase
+    .from("workout_logs")
+    .select("id", { count: "exact", head: true })
+    .eq("client_id", user.id);
+
+  const isNewClient = (logCount ?? 0) === 0 && !latestCheckIn;
+
   const daysSinceCheckIn = latestCheckIn
     ? daysSince(latestCheckIn.created_at)
     : null;
@@ -74,6 +84,35 @@ export default async function ClientDashboardPage() {
           Overview of your current programs and activity.
         </p>
       </div>
+
+      {/* Welcome banner for new clients */}
+      {isNewClient && workoutPlan && (
+        <Card className="mt-6 border-emerald-200 bg-emerald-50/50">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 flex-shrink-0">
+              <BookOpen className="h-6 w-6 text-emerald-700" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-foreground">
+                Welcome to {workoutPlan.name}!
+              </p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Read your program guide before your first session — it covers
+                how to train, eat, and track your progress.
+              </p>
+            </div>
+            <Link
+              href="/client/guide"
+              className={cn(
+                buttonVariants({ size: "sm" }),
+                "flex-shrink-0"
+              )}
+            >
+              Read Guide <ArrowRight className="ml-1 h-3.5 w-3.5" />
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Summary cards */}
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

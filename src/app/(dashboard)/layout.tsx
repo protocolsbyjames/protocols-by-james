@@ -9,6 +9,8 @@ import {
   ClipboardCheck,
   TrendingUp,
   Phone,
+  BookOpen,
+  Link as LinkIcon,
 } from "lucide-react";
 
 const coachLinks: NavLink[] = [
@@ -23,9 +25,11 @@ const coachLinks: NavLink[] = [
 const clientLinks: NavLink[] = [
   { label: "Dashboard", href: "/client", icon: <LayoutDashboard className="h-4 w-4" /> },
   { label: "Workouts", href: "/client/workouts", icon: <Dumbbell className="h-4 w-4" /> },
-  { label: "Meals", href: "/client/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
+  { label: "Nutrition", href: "/client/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
   { label: "Check-in", href: "/client/check-in", icon: <ClipboardCheck className="h-4 w-4" /> },
   { label: "Progress", href: "/client/progress", icon: <TrendingUp className="h-4 w-4" /> },
+  { label: "Guide", href: "/client/guide", icon: <BookOpen className="h-4 w-4" /> },
+  { label: "Resources", href: "/client/resources", icon: <LinkIcon className="h-4 w-4" /> },
   { label: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
 ];
 

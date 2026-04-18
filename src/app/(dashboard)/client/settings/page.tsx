@@ -133,8 +133,8 @@ export default function ClientSettingsPage() {
   }
 
   async function handleManageSubscription() {
-    // Redirect to Stripe Customer Portal via API route
-    const res = await fetch("/api/stripe/customer-portal", { method: "POST" });
+    // Redirect to LemonSqueezy Customer Portal via API route
+    const res = await fetch("/api/customer-portal", { method: "POST" });
     const data = await res.json();
     if (data.url) {
       window.location.href = data.url;

@@ -162,16 +162,22 @@ export default function CoachSettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Stripe Connect */}
+      {/* Payment Processing */}
       <Card>
         <CardHeader>
-          <CardTitle>Stripe Connect</CardTitle>
+          <CardTitle>Payment Processing</CardTitle>
           <CardDescription>
-            Connect your Stripe account to receive payments from clients.
+            Payments are processed through LemonSqueezy. Manage your store,
+            products, and payouts from the LemonSqueezy dashboard.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline">Connect Stripe Account</Button>
+          <Button
+            variant="outline"
+            onClick={() => window.open("https://app.lemonsqueezy.com", "_blank")}
+          >
+            Open LemonSqueezy Dashboard
+          </Button>
         </CardContent>
       </Card>
 

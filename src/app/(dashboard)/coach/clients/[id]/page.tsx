@@ -22,6 +22,8 @@ import {
   ArrowLeft,
   CheckCircle2,
   Circle,
+  Calendar,
+  Notebook,
 } from "lucide-react";
 
 function getInitials(name: string | null): string {
@@ -116,6 +118,28 @@ export default async function CoachClientDetailPage({
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+
+  // Fetch recent workout logs (last 14 days)
+  const fourteenDaysAgo = new Date();
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+  const { data: workoutLogs } = await supabase
+    .from("workout_logs")
+    .select("id, exercise_id, workout_date, set_number, weight_lbs, reps_completed, notes")
+    .eq("client_id", clientId)
+    .gte("workout_date", fourteenDaysAgo.toISOString().split("T")[0])
+    .order("workout_date", { ascending: false })
+    .order("set_number", { ascending: true });
+
+  // Fetch recent meal logs (last 7 days)
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const { data: mealLogs } = await supabase
+    .from("meal_logs")
+    .select("id, log_date, meal_type, description, calories, protein_g, carbs_g, fat_g")
+    .eq("client_id", clientId)
+    .gte("log_date", sevenDaysAgo.toISOString().split("T")[0])
+    .order("log_date", { ascending: false })
+    .order("created_at", { ascending: true });
 
   // Fetch recent check-ins with photos and feedback
   const { data: checkIns } = await supabase
@@ -304,6 +328,73 @@ export default async function CoachClientDetailPage({
         )}
       </section>
 
+      {/* Recent Workout Logs */}
+      {(workoutLogs ?? []).length > 0 && (() => {
+        // Build exercise name lookup from workout plan
+        const exerciseNames: Record<string, string> = {};
+        for (const day of workoutDays) {
+          for (const ex of day.exercises ?? []) {
+            exerciseNames[ex.id] = ex.name;
+          }
+        }
+
+        // Group logs by date, then by exercise
+        const logsByDate: Record<string, Record<string, { name: string; sets: { set_number: number; weight_lbs: number; reps_completed: number }[] }>> = {};
+        for (const log of workoutLogs ?? []) {
+          const date = log.workout_date;
+          if (!logsByDate[date]) logsByDate[date] = {};
+          const exId = log.exercise_id;
+          if (!logsByDate[date][exId]) {
+            logsByDate[date][exId] = {
+              name: exerciseNames[exId] ?? "Unknown exercise",
+              sets: [],
+            };
+          }
+          logsByDate[date][exId].sets.push({
+            set_number: log.set_number,
+            weight_lbs: Number(log.weight_lbs),
+            reps_completed: log.reps_completed,
+          });
+        }
+
+        const sortedDates = Object.keys(logsByDate).sort((a, b) => b.localeCompare(a));
+
+        return (
+          <div className="mt-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Notebook className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm font-medium text-muted-foreground">Recent Training Logs (14 days)</p>
+            </div>
+            <div className="space-y-3">
+              {sortedDates.map((date) => (
+                <Card key={date} className="border-border">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {Object.values(logsByDate[date]).map((exercise, i) => (
+                      <div key={i}>
+                        <p className="text-sm font-medium text-foreground">{exercise.name}</p>
+                        <div className="mt-1 flex flex-wrap gap-2">
+                          {exercise.sets.sort((a, b) => a.set_number - b.set_number).map((s) => (
+                            <span key={s.set_number} className="text-xs text-muted-foreground bg-muted rounded px-2 py-0.5">
+                              Set {s.set_number}: {s.weight_lbs} lbs &times; {s.reps_completed}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       <Separator className="my-8" />
 
       {/* Meal Plan */}
@@ -370,6 +461,81 @@ export default async function CoachClientDetailPage({
             No meal plan assigned.
           </p>
         )}
+      {/* Recent Meal Logs */}
+      {(mealLogs ?? []).length > 0 && (() => {
+        const MEAL_TYPE_ORDER = ["breakfast", "pre_workout", "lunch", "post_workout", "dinner", "snack"];
+        const mealTypeLabel = (t: string) =>
+          t.replace("_", "-").replace(/\b\w/g, (c) => c.toUpperCase());
+
+        // Group by date
+        const logsByDate: Record<string, typeof mealLogs> = {};
+        for (const log of mealLogs ?? []) {
+          if (!logsByDate[log.log_date]) logsByDate[log.log_date] = [];
+          logsByDate[log.log_date]!.push(log);
+        }
+
+        const sortedDates = Object.keys(logsByDate).sort((a, b) => b.localeCompare(a));
+
+        return (
+          <div className="mt-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Notebook className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm font-medium text-muted-foreground">Recent Meal Logs (7 days)</p>
+            </div>
+            <div className="space-y-3">
+              {sortedDates.map((date) => {
+                const dayLogs = logsByDate[date] ?? [];
+                const totalCal = dayLogs.reduce((s, m) => s + (m.calories ?? 0), 0);
+                const totalP = dayLogs.reduce((s, m) => s + (m.protein_g ?? 0), 0);
+                const totalC = dayLogs.reduce((s, m) => s + (m.carbs_g ?? 0), 0);
+                const totalF = dayLogs.reduce((s, m) => s + (m.fat_g ?? 0), 0);
+
+                // Group by meal type
+                const grouped = MEAL_TYPE_ORDER
+                  .map((type) => ({
+                    type,
+                    label: mealTypeLabel(type),
+                    meals: dayLogs.filter((m) => m.meal_type === type),
+                  }))
+                  .filter((g) => g.meals.length > 0);
+
+                return (
+                  <Card key={date} className="border-border">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                        </CardTitle>
+                        <span className="text-xs text-muted-foreground">
+                          {totalCal} cal &middot; {totalP}g P &middot; {totalC}g C &middot; {totalF}g F
+                        </span>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {grouped.map((group) => (
+                        <div key={group.type}>
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{group.label}</p>
+                          {group.meals.map((meal) => (
+                            <div key={meal.id} className="text-sm text-foreground mt-0.5">
+                              {meal.description}
+                              {meal.calories != null && (
+                                <span className="text-xs text-muted-foreground ml-2">
+                                  {meal.calories} cal
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
       </section>
 
       <Separator className="my-8" />

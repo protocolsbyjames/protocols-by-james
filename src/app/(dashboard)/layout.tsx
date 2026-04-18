@@ -11,6 +11,7 @@ import {
   Phone,
   BookOpen,
   Link as LinkIcon,
+  MessageSquare,
 } from "lucide-react";
 
 const coachLinks: NavLink[] = [
@@ -19,6 +20,7 @@ const coachLinks: NavLink[] = [
   { label: "Workouts", href: "/coach/workouts", icon: <Dumbbell className="h-4 w-4" /> },
   { label: "Meals", href: "/coach/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
   { label: "Check-ins", href: "/coach/check-ins", icon: <ClipboardCheck className="h-4 w-4" /> },
+  { label: "Messages", href: "/coach/messages", icon: <MessageSquare className="h-4 w-4" /> },
   { label: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
 ];
 
@@ -28,6 +30,7 @@ const clientLinks: NavLink[] = [
   { label: "Nutrition", href: "/client/meals", icon: <UtensilsCrossed className="h-4 w-4" /> },
   { label: "Check-in", href: "/client/check-in", icon: <ClipboardCheck className="h-4 w-4" /> },
   { label: "Progress", href: "/client/progress", icon: <TrendingUp className="h-4 w-4" /> },
+  { label: "Messages", href: "/client/messages", icon: <MessageSquare className="h-4 w-4" /> },
   { label: "Guide", href: "/client/guide", icon: <BookOpen className="h-4 w-4" /> },
   { label: "Resources", href: "/client/resources", icon: <LinkIcon className="h-4 w-4" /> },
   { label: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
